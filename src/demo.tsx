@@ -31,7 +31,7 @@ class DemoPage extends React.Component<DemoPageProps, DemoPageState> {
     const {date} = this.state
     return (
       <div className={classes.container}>
-        <DateFormatInput name='date-input' value={date} onChange={this.onChange}/>
+        <DateFormatInput name='date-input' value={date} onChange={this.onChange} label='Date'/>
       </div>
     )
   } 

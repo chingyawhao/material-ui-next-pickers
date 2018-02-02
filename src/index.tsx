@@ -26,9 +26,14 @@ const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis'
   },
+  formControl: {
+    cursor: 'pointer'
+  },
   input: {
     width: '180px',
     maxWidth: '100%',
+    height: '19px',
+    padding: '6px 0 7px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis'
@@ -296,17 +301,17 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
   }
   render() {
     const {name, label, value, error, fullWidth, min, max, classes} = this.props
-    const {screenType, focus, calendarShow, calendarFocus} = this.state
+    const {focus, calendarShow, calendarFocus} = this.state
     return (
       <Manager>
-        <Target><div ref={input => this.input = ReactDOM.findDOMNode(input)}><FormControl error={error !== undefined} fullWidth>
-          {label && <InputLabel shrink={focus || value !== undefined} classes={{root:classes.label}} htmlFor={name}>{label}</InputLabel>}
-          <Input name={name} value={value? DateUtil.format(value, 'EEE, MMMM d, yyyy'):''}
+        <Target><div ref={input => this.input = ReactDOM.findDOMNode(input)}><FormControl className={classes.formControl} onClick={this.toggleShowCalendar} error={error !== undefined} fullWidth>
+          {label && <InputLabel shrink={focus || calendarShow || value !== undefined} classes={{root:classes.label}} htmlFor={name}>{label}</InputLabel>}
+          <Input name={name} value={value? DateUtil.format(value, 'EEE, MMMM d, yyyy'):'\u00a0'}
             onFocus={() => this.onFocus(true)}
             onBlur={() => this.onFocus(false)}
             inputComponent={({value}) => <div className={classes.input}>{value}</div>}
             endAdornment={<InputAdornment position='end'>
-              <IconButton onClick={this.toggleShowCalendar} onMouseDown={event => event.preventDefault()}>
+              <IconButton onMouseDown={event => event.preventDefault()}>
                 <CalendarIcon/>
               </IconButton>
             </InputAdornment>}
