@@ -6,8 +6,8 @@ module.exports = {
   devtool: 'eval',
   entry: process.env.NODE_ENV === 'development'? [
     'webpack-dev-server/client?',
-    './src/demo'
-  ]:['./src/demo'],
+    './demo'
+  ]:['./demo'],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].bundle.js',
