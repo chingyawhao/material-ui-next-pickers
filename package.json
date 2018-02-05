@@ -4,6 +4,7 @@
   "description": "Datepicker for material-ui next",
   "main": "dist/index.js",
   "scripts": {
+    "postinstall": "tsc --outDir dist --declaration true",
     "start:dev": "NODE_ENV=development webpack-dev-server --content-base app --history-api-fallback",
     "compile": "NODE_ENV=production webpack --display-error-details",
     "test": "echo \"Error: no test specified\" && exit 1"
