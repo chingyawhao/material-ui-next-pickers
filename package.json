@@ -1,6 +1,6 @@
 {
   "name": "material-ui-next-datepicker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Datepicker for material-ui next",
   "main": "dist/index.js",
   "scripts": {
