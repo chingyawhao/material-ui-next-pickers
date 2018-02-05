@@ -8,8 +8,11 @@
     "experimentalDecorators": true,
     "jsx": "react"
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
     "node_modules",
-    "src/demo.tsx"
+    "demo/**/*"
   ]
 }

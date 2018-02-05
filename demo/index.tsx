@@ -4,7 +4,7 @@ import {MuiThemeProvider, createMuiTheme, withStyles, StyledComponentProps, Them
 
 const theme = createMuiTheme()
 
-import DateFormatInput from './index'
+import DateFormatInput from '../src'
 const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
   container: {
     width: '100vw',
