@@ -6,8 +6,7 @@
     "lib": ["dom", "es2015", "es2016"],
     "sourceMap": true,
     "experimentalDecorators": true,
-    "jsx": "react",
-    "types": ["material-ui"]
+    "jsx": "react"
   },
   "include": [
     "src/**/*"
