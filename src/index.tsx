@@ -190,12 +190,16 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     })
   }
   selectCalendarYear = (year:number) => {
+    const {min, max} = this.props
     const {calendarFocus} = this.state
     this.setState({
       calendarFocus: {
         ...calendarFocus,
         mode: 'month',
-        year
+        year,
+        month: min && calendarFocus.month < min.getMonth() && year === min.getFullYear()? min.getMonth():(
+          max && calendarFocus.month > max.getMonth() && year === max.getFullYear()? max.getMonth():calendarFocus.month
+        )
       }
     })
   }
@@ -265,7 +269,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
   }
   dayInvalid = (date:Date) => {
     const {value, min, max} = this.props
-    return (value && DateUtil.sameDay(date, value)) || (min && date.getTime() < min.getTime()) || (max && date.getTime() > max.getTime())
+    return (value && DateUtil.sameDay(date, value)) || (min && date.getTime() < min.setHours(0, 0, 0, 0) || (max && date.getTime() > max.setHours(0, 0, 0, 0)))
   }
   generateYearCalendar = (index:number) => {
     const years:number[][] = []
@@ -342,7 +346,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
                         </div>
                         <div className={classes.week}>
                           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) =>
-                            <Typography key={'weeklabel-' + index} className={classes.weekDay} type='body1'>{day}</Typography>
+                            <Typography key={'weeklabel-' + index} className={classes.weekDay} variant='body1'>{day}</Typography>
                           )}
                         </div>
                         <VirtualizedSwipeableViews className={classes.calendarContainer} index={calendarFocus.year * 12 + calendarFocus.month} animateHeight slideRenderer={({index}) =>
@@ -351,7 +355,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
                               <div className={classes.week} key={'week-' + index}>
                                 {week.map((date, index) =>
                                   date? <IconButton disabled={this.dayInvalid(date)} className={classnames({[classes.selectedDay]:value && DateUtil.sameDay(date, value)})} onClick={() => this.selectDate(date)} key={'day-' + index}>
-                                    <Typography className={classnames({[classes.selectedDayText]:value && DateUtil.sameDay(date, value), [classes.invalidInput]:this.dayInvalid(date)})} type='body1'>{date.getDate()}</Typography>
+                                    <Typography className={classnames({[classes.selectedDayText]:value && DateUtil.sameDay(date, value), [classes.invalidInput]:this.dayInvalid(date)})} variant='body1'>{date.getDate()}</Typography>
                                   </IconButton> : 
                                   <div className={classes.emptyDate} key={'day-' + index}/>
                                 )}
@@ -370,7 +374,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
                       })}>
                         <div className={classes.calendarControl}>
                           <IconButton disabled={!this.previousYearsValid()} onClick={this.previousYears}><ChevronLeftIcon/></IconButton>
-                          <Typography className={classes.calendarMonthTitle} type='subheading'>
+                          <Typography className={classes.calendarMonthTitle} variant='subheading'>
                             {(calendarFocus.yearIndex * 18) + ' - ' + (calendarFocus.yearIndex * 18 + 17)}
                           </Typography>
                           <IconButton disabled={!this.nextYearsValid()} onClick={this.nextYears}><ChevronRightIcon/></IconButton>
@@ -380,8 +384,8 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
                             {this.generateYearCalendar(index).map((years, index) =>
                               <div className={classes.years} key={'years-' + index}>
                                 {years.map((year, index) =>
-                                  <Button raised={calendarFocus.year === year} disabled={this.yearInvalid(year)} onClick={() => this.selectCalendarYear(year)} key={'year-' + index}>
-                                    <Typography className={classnames({[classes.invalidInput]:this.yearInvalid(year)})} type='body1'>{year}</Typography>
+                                  <Button variant={calendarFocus.year === year? 'raised':'flat'} disabled={this.yearInvalid(year)} onClick={() => this.selectCalendarYear(year)} key={'year-' + index}>
+                                    <Typography className={classnames({[classes.invalidInput]:this.yearInvalid(year)})} variant='body1'>{year}</Typography>
                                   </Button>
                                 )}
                               </div>

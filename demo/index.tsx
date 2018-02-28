@@ -4,7 +4,7 @@ import {MuiThemeProvider, createMuiTheme, withStyles, StyledComponentProps, Them
 
 const theme = createMuiTheme()
 
-import DateFormatInput from '../src'
+import DateFormatInput from '../src/index'
 const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
   container: {
     width: '100vw',
@@ -18,8 +18,11 @@ const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
 class DemoPage extends React.Component<DemoPageProps, DemoPageState> {
   constructor(props) {
     super(props)
+    const now = new Date()
     this.state = {
-      date: undefined
+      date: undefined,
+      min: new Date(now.getTime() - (120 * 86400000)),
+      max: new Date(now.getTime() + (120 * 86400000))
     }
   }
   onChange = (date:Date) => {
@@ -28,10 +31,11 @@ class DemoPage extends React.Component<DemoPageProps, DemoPageState> {
   } 
   render() {
     const {classes} = this.props
-    const {date} = this.state
+    const {date, min, max} = this.state
+    console.log(`Date = ${date}, Min = ${min}, Max = ${max}`)
     return (
       <div className={classes.container}>
-        <DateFormatInput name='date-input' value={date} onChange={this.onChange} label='Date'/>
+        <DateFormatInput name='date-input' value={date} onChange={this.onChange} label='Date' min={min} max={max}/>
       </div>
     )
   } 
@@ -40,6 +44,8 @@ interface DemoPageProps extends React.Props<{}>, StyledComponentProps {
 }
 interface DemoPageState {
   date: Date
+  min: Date
+  max: Date
 }
 
 ReactDOM.render(

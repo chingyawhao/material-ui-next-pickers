@@ -18,10 +18,9 @@ module.exports = {
     extensions: ['.js', '.ts', '.tsx']
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.tsx?$/,
-      loader: 'ts-loader',
-      include: path.join(__dirname, 'src')
+      loader: 'ts-loader'
     }]
   },
   plugins: [
