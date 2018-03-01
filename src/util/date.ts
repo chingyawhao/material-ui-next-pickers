@@ -64,13 +64,13 @@ export const day = [{
     long: 'Saturday'
 }]
 export const format = (date:Date, format:string) =>
-  [{
+  [[{
     keyword: 'dd',
     word: fillInDigit(date.getDate(), 2)
   }, {
     keyword: 'd',
     word: date.getDate().toString()
-  }, {
+  }], [{
     keyword: 'MMMM',
     word: month[date.getMonth()].long
   }, {
@@ -82,21 +82,32 @@ export const format = (date:Date, format:string) =>
   }, {
     keyword: 'M',
     word: (date.getMonth() + 1).toString()
-  }, {
+  }], [{
     keyword: 'yyyy',
     word: fillInDigit(date.getFullYear(), 4)
   }, {
     keyword: 'yy',
     word: fillInDigit(date.getFullYear(), 2)
-  }, {
+  }], [{
     keyword: 'EEE',
     word: day[date.getDay()].short
   }, {
     keyword: 'EEEE',
     word: day[date.getDay()].long
-  }].reduce((dateString, formatting) =>
-    dateString.replace(formatting.keyword, formatting.word)
-  , format)
+  }]].reduce((dateString, formattings) => {
+    var foundFormatting
+    for(var i = 0; i < formattings.length; i++) {
+      if(dateString.includes(formattings[i].keyword)) {
+        foundFormatting = formattings[i]
+        break
+      }
+    }
+    if(foundFormatting) {
+      return dateString.replace(foundFormatting.keyword, foundFormatting.word)
+    } else {
+      return dateString
+    }
+  }, format)
 
 export const sameDay = (dateA, dateB) => {
   if(dateA !== undefined && dateB !== undefined) {

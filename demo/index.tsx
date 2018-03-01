@@ -26,13 +26,12 @@ class DemoPage extends React.Component<DemoPageProps, DemoPageState> {
     }
   }
   onChange = (date:Date) => {
-    console.log(date)
+    console.log('Date = ' + date)
     this.setState({date})
   } 
   render() {
     const {classes} = this.props
     const {date, min, max} = this.state
-    console.log(`Date = ${date}, Min = ${min}, Max = ${max}`)
     return (
       <div className={classes.container}>
         <DateFormatInput name='date-input' value={date} onChange={this.onChange} label='Date' min={min} max={max}/>
