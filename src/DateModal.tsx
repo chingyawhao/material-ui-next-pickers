@@ -16,6 +16,10 @@ const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
   calendarContainer: {
     width: (48 * 7) + 'px'
   },
+  calendarDialog: {
+    maxWidth: 'calc(100vw - 64px)',
+    overflow: 'hidden'
+  },
   calendarControl: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -41,13 +45,17 @@ const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
   week: {
     display: 'flex'
   },
-  weekDay: {
+  labelWeekDay: {
     height: '48px',
     width: '48px',
     color: theme.palette.grey.A200,
     fontWeight: 300,
     lineHeight: '48px',
     textAlign: 'center'
+  },
+  weekDay: {
+    flex: '1 1 auto',
+    maxHeight: 'calc((100vw - 48px) / 7)'
   },
   selectedDay: {
     border: '5px solid white',
@@ -187,7 +195,7 @@ class DateModal extends React.Component<DateModalProps, DateModalState> {
     const firstDay = new Date(calendarFocus.year, calendarFocus.month, 1)
     const daysInWeekInMonth:Date[][] = [Array.apply(undefined, {length:firstDay.getDay()})]
     var counter = firstDay.getDay()
-    for(var day = firstDay; day.getMonth() === calendarFocus.month; day = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1)) {
+    for(let day = firstDay; day.getMonth() === calendarFocus.month; day = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1)) {
       if(!daysInWeekInMonth[Math.floor(counter / 7)]) {
         daysInWeekInMonth[Math.floor(counter / 7)] = [new Date(day.getFullYear(), day.getMonth(), day.getDate())]
       } else {
@@ -195,10 +203,13 @@ class DateModal extends React.Component<DateModalProps, DateModalState> {
       }
       counter++
     }
+    for(let day = 6; !daysInWeekInMonth[daysInWeekInMonth.length - 1][day]; day--) {
+      daysInWeekInMonth[daysInWeekInMonth.length - 1][day] = undefined
+    }
     return daysInWeekInMonth
   }
   render() {
-    const {classes, value, calendarShow} = this.props
+    const {classes, value, calendarShow, dialog} = this.props
     const {mode, year, month, yearIndex} = this.state
     return (
       mode === 'month'? <div>
@@ -211,18 +222,18 @@ class DateModal extends React.Component<DateModalProps, DateModalState> {
         </div>
         <div className={classes.week}>
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) =>
-            <Typography key={'weeklabel-' + index} className={classes.weekDay} variant='body1'>{day}</Typography>
+            <Typography key={'weeklabel-' + index} className={classes.labelWeekDay} variant='body1'>{day}</Typography>
           )}
         </div>
-        <VirtualizedSwipeableViews className={classes.calendarContainer} index={year * 12 + month} animateHeight slideRenderer={({index}) =>
-          <div key={index} className={classes.calendarContainer}>
+        <VirtualizedSwipeableViews className={classnames(classes.calendarContainer, {[classes.calendarDialog]:dialog})} index={year * 12 + month} animateHeight slideRenderer={({index}) =>
+          <div key={index} className={classnames(classes.calendarContainer, {[classes.calendarDialog]:dialog})}>
             {this.generateMonthCalendar(index).map((week, index) =>
-              <div className={classes.week} key={'week-' + index}>
+              <div className={classnames(classes.week, {[classes.calendarDialog]:dialog})} key={'week-' + index}>
                 {week.map((date, index) =>
-                  date? <IconButton disabled={this.dayInvalid(date)} className={classnames({[classes.selectedDay]:value && DateUtil.sameDay(date, value)})} onClick={() => this.selectDate(date)} key={'day-' + index}>
+                  date? <IconButton disabled={this.dayInvalid(date)} className={classnames({[classes.weekDay]:dialog, [classes.selectedDay]:value && DateUtil.sameDay(date, value)})} onClick={() => this.selectDate(date)} key={'day-' + index}>
                     <Typography className={classnames({[classes.selectedDayText]:value && DateUtil.sameDay(date, value), [classes.invalidInput]:this.dayInvalid(date)})} variant='body1'>{date.getDate()}</Typography>
                   </IconButton> : 
-                  <div className={classes.emptyDate} key={'day-' + index}/>
+                  <div className={classnames({[classes.weekDay]:dialog}, classes.emptyDate)} key={'day-' + index}/>
                 )}
               </div>
             )}
@@ -237,8 +248,8 @@ class DateModal extends React.Component<DateModalProps, DateModalState> {
           </Typography>
           <IconButton disabled={!this.nextYearsValid()} onClick={this.nextYears}><ChevronRightIcon/></IconButton>
         </div>
-        <VirtualizedSwipeableViews className={classes.calendarContainer} index={yearIndex} animateHeight slideRenderer={({index}) =>
-          <div key={index} className={classes.calendarContainer}>
+        <VirtualizedSwipeableViews className={classnames(classes.calendarContainer, {[classes.calendarDialog]:dialog})} index={yearIndex} animateHeight slideRenderer={({index}) =>
+          <div key={index} className={classnames(classes.calendarContainer, {[classes.calendarDialog]:dialog})}>
             {this.generateYearCalendar(index).map((years, index) =>
               <div className={classes.years} key={'years-' + index}>
                 {years.map((currentYear, index) =>
@@ -260,6 +271,7 @@ export interface DateModalProps extends React.Props<{}>, StyledComponentProps {
   calendarShow: boolean
   min?: Date
   max?: Date
+  dialog?: boolean
 }
 export interface DateModalState {
   mode: 'year' | 'month'

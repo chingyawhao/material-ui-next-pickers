@@ -34,7 +34,7 @@ class DemoPage extends React.Component<DemoPageProps, DemoPageState> {
     const {date, min, max} = this.state
     return (
       <div className={classes.container}>
-        <DateFormatInput name='date-input' value={date} onChange={this.onChange} label='Date' min={min} max={max}/>
+        <DateFormatInput name='date-input' value={date} onChange={this.onChange} label='Date' min={min} max={max} dialog/>
       </div>
     )
   } 

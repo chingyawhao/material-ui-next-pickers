@@ -20,6 +20,7 @@ error?: string
 min?: Date
 max?: Date
 fullWidth?: boolean
+dialog?: boolean
 ```
 
 ## Basic setup
