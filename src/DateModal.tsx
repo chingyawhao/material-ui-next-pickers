@@ -201,20 +201,20 @@ class DateModal extends React.Component<DateModalProps, DateModalState> {
     const {classes, value, calendarShow} = this.props
     const {mode, year, month, yearIndex} = this.state
     return (
-      mode === 'month'? [
-        <div key='menu' className={classes.calendarControl}>
+      mode === 'month'? <div>
+        <div className={classes.calendarControl}>
           <IconButton disabled={!this.previousMonthValid()} onClick={this.previousMonth}><ChevronLeftIcon/></IconButton>
           <Button onClick={this.showYearsCalendar} className={classes.calendarMonthTitle}>
             {DateUtil.month[month].long + ', ' + year}
           </Button>
           <IconButton disabled={!this.nextMonthValid()} onClick={this.nextMonth}><ChevronRightIcon/></IconButton>
-        </div>,
-        <div key='label' className={classes.week}>
+        </div>
+        <div className={classes.week}>
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) =>
             <Typography key={'weeklabel-' + index} className={classes.weekDay} variant='body1'>{day}</Typography>
           )}
-        </div>,
-        <VirtualizedSwipeableViews key='select' className={classes.calendarContainer} index={year * 12 + month} animateHeight slideRenderer={({index}) =>
+        </div>
+        <VirtualizedSwipeableViews className={classes.calendarContainer} index={year * 12 + month} animateHeight slideRenderer={({index}) =>
           <div key={index} className={classes.calendarContainer}>
             {this.generateMonthCalendar(index).map((week, index) =>
               <div className={classes.week} key={'week-' + index}>
@@ -228,16 +228,16 @@ class DateModal extends React.Component<DateModalProps, DateModalState> {
             )}
           </div>
         }/>
-      ] :
-      mode === 'year'? [
-        <div key='menu' className={classes.calendarControl}>
+      </div> :
+      mode === 'year'? <div>
+        <div className={classes.calendarControl}>
           <IconButton disabled={!this.previousYearsValid()} onClick={this.previousYears}><ChevronLeftIcon/></IconButton>
           <Typography className={classes.calendarMonthTitle} variant='subheading'>
             {(yearIndex * 18) + ' - ' + (yearIndex * 18 + 17)}
           </Typography>
           <IconButton disabled={!this.nextYearsValid()} onClick={this.nextYears}><ChevronRightIcon/></IconButton>
-        </div>,
-        <VirtualizedSwipeableViews key='select' className={classes.calendarContainer} index={yearIndex} animateHeight slideRenderer={({index}) =>
+        </div>
+        <VirtualizedSwipeableViews className={classes.calendarContainer} index={yearIndex} animateHeight slideRenderer={({index}) =>
           <div key={index} className={classes.calendarContainer}>
             {this.generateYearCalendar(index).map((years, index) =>
               <div className={classes.years} key={'years-' + index}>
@@ -250,7 +250,7 @@ class DateModal extends React.Component<DateModalProps, DateModalState> {
             )}
           </div>
         }/>
-      ] : undefined
+      </div> : <div/>
     )
   }
 }
