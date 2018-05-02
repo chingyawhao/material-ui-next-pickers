@@ -1,9 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import {Manager, Target, Popper} from 'react-popper'
-import Portal from 'react-travel'
 import * as classnames from 'classnames'
 import {withStyles, Theme, StyledComponentProps} from 'material-ui/styles'
+import Popover from 'material-ui/Popover'
 import {FormControl, FormHelperText} from 'material-ui/Form'
 import Input, {InputLabel, InputAdornment} from 'material-ui/Input'
 import IconButton from 'material-ui/IconButton'
@@ -30,15 +29,12 @@ const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis'
-  },
-  popper: {
-    height: (8 * 48) + 'px'
   }
 })
 @(withStyles as any)(styles)
 class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatInputState> {
-  input:Element
-  dateModal:Element
+  input:Element | Text
+  dateModal:Element | Text
   constructor(props) {
     super(props)
     const now = new Date()
@@ -74,11 +70,11 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     this.setState({calendarShow:!calendarShow})
   }
   render() {
-    const {name, label, value, onChange, error, fullWidth, min, max, classes} = this.props
+    const {name, label, value, onChange, placement, error, fullWidth, min, max, classes} = this.props
     const {focus, calendarShow} = this.state
-    return (
-      <Manager>
-        <Target><div ref={input => this.input = ReactDOM.findDOMNode(input)}><FormControl className={classes.formControl} onClick={this.toggleShowCalendar} error={error !== undefined} fullWidth>
+    return ([
+      <div key='date-input' ref={input => this.input = ReactDOM.findDOMNode(input)}>
+        <FormControl className={classes.formControl} onClick={this.toggleShowCalendar} error={error !== undefined} fullWidth>
           {label && <InputLabel shrink={focus || calendarShow || value !== undefined} classes={{root:classes.label}} htmlFor={name}>{label}</InputLabel>}
           <Input name={name} value={value? DateUtil.format(value, 'EEE, MMMM d, yyyy'):'\u00a0'}
             onFocus={() => this.onFocus(true)}
@@ -91,14 +87,12 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
             </InputAdornment>}
           />
           {error && <FormHelperText error>{error}</FormHelperText>}
-        </FormControl></div></Target>
-        <Portal>
-          <Popper placement='bottom-start'>
-            <DateModal ref={dateModal => this.dateModal = ReactDOM.findDOMNode(dateModal)} value={value} onChange={onChange} min={min} max={max} calendarShow={calendarShow}/>
-          </Popper>
-        </Portal>
-      </Manager>
-    )
+        </FormControl>
+      </div>,
+      <Popover open={calendarShow} anchorOrigin={placement || {vertical:'top', horizontal:'left'}} anchorEl={this.input as any}>
+        <DateModal ref={dateModal => this.dateModal = ReactDOM.findDOMNode(dateModal)} value={value} onChange={onChange} min={min} max={max} calendarShow={calendarShow}/>
+      </Popover>
+    ])
   }
 }
 export interface DateFormatInputProps extends React.Props<{}>, StyledComponentProps {
@@ -106,6 +100,10 @@ export interface DateFormatInputProps extends React.Props<{}>, StyledComponentPr
   label?: string
   value: Date
   onChange: (value:Date) => void
+  placement?: {
+    vertical: 'top' | 'center' | 'bottom'
+    horizontal: 'left' | 'center' | 'right'
+  }
   error?: string
   min?: Date
   max?: Date

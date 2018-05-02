@@ -21,7 +21,7 @@ class DemoPage extends React.Component<DemoPageProps, DemoPageState> {
     const now = new Date()
     this.state = {
       date: undefined,
-      min: new Date(now.getTime() - (120 * 86400000)),
+      min: new Date(now.getTime() - (180 * 86400000)),
       max: new Date(now.getTime() + (120 * 86400000))
     }
   }

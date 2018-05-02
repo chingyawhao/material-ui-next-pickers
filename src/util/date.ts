@@ -95,13 +95,7 @@ export const format = (date:Date, format:string) =>
     keyword: 'EEEE',
     word: day[date.getDay()].long
   }]].reduce((dateString, formattings) => {
-    var foundFormatting
-    for(var i = 0; i < formattings.length; i++) {
-      if(dateString.includes(formattings[i].keyword)) {
-        foundFormatting = formattings[i]
-        break
-      }
-    }
+    let foundFormatting = formattings.find(formatting => dateString.includes(formatting.keyword))
     if(foundFormatting) {
       return dateString.replace(foundFormatting.keyword, foundFormatting.word)
     } else {

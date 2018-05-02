@@ -1,7 +1,6 @@
 import * as React from 'react'
 import SwipeableViews from 'react-swipeable-views'
 import {virtualize} from 'react-swipeable-views-utils'
-import {TransitionGroup, Transition} from 'react-transition-group'
 import * as classnames from 'classnames'
 import {withStyles, Theme, StyledComponentProps} from 'material-ui/styles'
 import Typography from 'material-ui/Typography'
@@ -14,39 +13,6 @@ import * as DateUtil from './util/date'
 const VirtualizedSwipeableViews = virtualize(SwipeableViews)
 
 const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
-  popperEnter: {
-    pointerEvents: 'none',
-    transform: 'scaleY(0.5)',
-    opacity: 0
-  },
-  popperEntered: {
-    pointerEvents: 'all',
-    transform: 'scaleY(1)',
-    opacity: 1,
-    transition: theme.transitions.create(['opacity', 'transform'], {duration:300})
-  },
-  popperExit: {
-    pointerEvents: 'all',
-    transform: 'scaleY(1)',
-    opacity: 1
-  },
-  popperExited: {
-    pointerEvents: 'none',
-    transform: 'scaleY(0.5)',
-    opacity: 0,
-    transition: theme.transitions.create(['opacity', 'transform'], {duration:300})
-  },
-  card: {
-    position: 'absolute',
-    marginTop: '4px',
-    marginBottom: '12px'
-  },
-  cardEnter: {
-    opacity: 1
-  },
-  cardExit: {
-    opacity: 0
-  },
   calendarContainer: {
     width: (48 * 7) + 'px'
   },
@@ -65,6 +31,9 @@ const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
     display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center'
+  },
+  currentYear: {
+    backgroundColor: 'rgba(0, 0, 0, 0.04)'
   },
   invalidInput: {
     color: theme.palette.grey.A200
@@ -167,7 +136,7 @@ class DateModal extends React.Component<DateModalProps, DateModalState> {
   yearInvalid = (currentYear:number) => {
     const {min, max} = this.props
     const {month, year} = this.state
-    return year === currentYear || (min && currentYear < min.getFullYear()) || (max && currentYear > max.getFullYear())
+    return (min && currentYear < min.getFullYear()) || (max && currentYear > max.getFullYear())
   }
   previousMonthValid = () => {
     const {min} = this.props
@@ -232,81 +201,56 @@ class DateModal extends React.Component<DateModalProps, DateModalState> {
     const {classes, value, calendarShow} = this.props
     const {mode, year, month, yearIndex} = this.state
     return (
-      <Transition in={calendarShow} timeout={300}>
-        {(state) =>
-          <div className={classnames({
-            [classes.popperEnter]: (state === 'exited' || state === 'entering') && calendarShow,
-            [classes.popperEntered]: 'entered' && calendarShow,
-            [classes.popperExit]: (state === 'entered' || state === 'exiting') && !calendarShow,
-            [classes.popperExited]: state === 'exited' && !calendarShow
-          })}>
-            <Transition in={mode === 'month'} unmountOnExit timeout={0}>
-              {(state) => 
-                <Card key='month-calendar' elevation={8} className={classnames(classes.card, {
-                  [classes.cardEnter]: (state === 'entered' || state === 'entering') && mode === 'month',
-                  [classes.cardExit]: (state === 'exited' || state === 'exiting') && mode !== 'month'
-                })}>
-                  <div className={classes.calendarControl}>
-                    <IconButton disabled={!this.previousMonthValid()} onClick={this.previousMonth}><ChevronLeftIcon/></IconButton>
-                    <Button onClick={this.showYearsCalendar} className={classes.calendarMonthTitle}>
-                      {DateUtil.month[month].long + ', ' + year}
-                    </Button>
-                    <IconButton disabled={!this.nextMonthValid()} onClick={this.nextMonth}><ChevronRightIcon/></IconButton>
-                  </div>
-                  <div className={classes.week}>
-                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) =>
-                      <Typography key={'weeklabel-' + index} className={classes.weekDay} variant='body1'>{day}</Typography>
-                    )}
-                  </div>
-                  <VirtualizedSwipeableViews className={classes.calendarContainer} index={year * 12 + month} animateHeight slideRenderer={({index}) =>
-                    <div key={index} className={classes.calendarContainer}>
-                      {this.generateMonthCalendar(index).map((week, index) =>
-                        <div className={classes.week} key={'week-' + index}>
-                          {week.map((date, index) =>
-                            date? <IconButton disabled={this.dayInvalid(date)} className={classnames({[classes.selectedDay]:value && DateUtil.sameDay(date, value)})} onClick={() => this.selectDate(date)} key={'day-' + index}>
-                              <Typography className={classnames({[classes.selectedDayText]:value && DateUtil.sameDay(date, value), [classes.invalidInput]:this.dayInvalid(date)})} variant='body1'>{date.getDate()}</Typography>
-                            </IconButton> : 
-                            <div className={classes.emptyDate} key={'day-' + index}/>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  }/>
-                </Card>
-              }
-            </Transition>
-            <Transition in={mode === 'year'} unmountOnExit timeout={0}>
-              {(state) =>
-                <Card key='year-calendar' elevation={8} className={classnames(classes.card, {
-                  [classes.cardEnter]: (state === 'entered' || state === 'entering') && mode === 'year',
-                  [classes.cardExit]: (state === 'exited' || state === 'exiting') && mode !== 'year'
-                })}>
-                  <div className={classes.calendarControl}>
-                    <IconButton disabled={!this.previousYearsValid()} onClick={this.previousYears}><ChevronLeftIcon/></IconButton>
-                    <Typography className={classes.calendarMonthTitle} variant='subheading'>
-                      {(yearIndex * 18) + ' - ' + (yearIndex * 18 + 17)}
-                    </Typography>
-                    <IconButton disabled={!this.nextYearsValid()} onClick={this.nextYears}><ChevronRightIcon/></IconButton>
-                  </div>
-                  <VirtualizedSwipeableViews className={classes.calendarContainer} index={yearIndex} animateHeight slideRenderer={({index}) =>
-                    <div key={index} className={classes.calendarContainer}>
-                      {this.generateYearCalendar(index).map((years, index) =>
-                        <div className={classes.years} key={'years-' + index}>
-                          {years.map((currentYear, index) =>
-                            <Button variant={year === currentYear? 'raised':'flat'} disabled={this.yearInvalid(currentYear)} onClick={() => this.selectCalendarYear(currentYear)} key={'year-' + index}>
-                              <Typography className={classnames({[classes.invalidInput]:this.yearInvalid(currentYear)})} variant='body1'>{currentYear}</Typography>
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  }/>
-                </Card>
-              }
-            </Transition>
+      mode === 'month'? [
+        <div key='menu' className={classes.calendarControl}>
+          <IconButton disabled={!this.previousMonthValid()} onClick={this.previousMonth}><ChevronLeftIcon/></IconButton>
+          <Button onClick={this.showYearsCalendar} className={classes.calendarMonthTitle}>
+            {DateUtil.month[month].long + ', ' + year}
+          </Button>
+          <IconButton disabled={!this.nextMonthValid()} onClick={this.nextMonth}><ChevronRightIcon/></IconButton>
+        </div>,
+        <div key='label' className={classes.week}>
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) =>
+            <Typography key={'weeklabel-' + index} className={classes.weekDay} variant='body1'>{day}</Typography>
+          )}
+        </div>,
+        <VirtualizedSwipeableViews key='select' className={classes.calendarContainer} index={year * 12 + month} animateHeight slideRenderer={({index}) =>
+          <div key={index} className={classes.calendarContainer}>
+            {this.generateMonthCalendar(index).map((week, index) =>
+              <div className={classes.week} key={'week-' + index}>
+                {week.map((date, index) =>
+                  date? <IconButton disabled={this.dayInvalid(date)} className={classnames({[classes.selectedDay]:value && DateUtil.sameDay(date, value)})} onClick={() => this.selectDate(date)} key={'day-' + index}>
+                    <Typography className={classnames({[classes.selectedDayText]:value && DateUtil.sameDay(date, value), [classes.invalidInput]:this.dayInvalid(date)})} variant='body1'>{date.getDate()}</Typography>
+                  </IconButton> : 
+                  <div className={classes.emptyDate} key={'day-' + index}/>
+                )}
+              </div>
+            )}
           </div>
-        }
-      </Transition>
+        }/>
+      ] :
+      mode === 'year'? [
+        <div key='menu' className={classes.calendarControl}>
+          <IconButton disabled={!this.previousYearsValid()} onClick={this.previousYears}><ChevronLeftIcon/></IconButton>
+          <Typography className={classes.calendarMonthTitle} variant='subheading'>
+            {(yearIndex * 18) + ' - ' + (yearIndex * 18 + 17)}
+          </Typography>
+          <IconButton disabled={!this.nextYearsValid()} onClick={this.nextYears}><ChevronRightIcon/></IconButton>
+        </div>,
+        <VirtualizedSwipeableViews key='select' className={classes.calendarContainer} index={yearIndex} animateHeight slideRenderer={({index}) =>
+          <div key={index} className={classes.calendarContainer}>
+            {this.generateYearCalendar(index).map((years, index) =>
+              <div className={classes.years} key={'years-' + index}>
+                {years.map((currentYear, index) =>
+                  <Button className={year === currentYear? classes.currentYear:''} disabled={this.yearInvalid(currentYear)} onClick={() => this.selectCalendarYear(currentYear)} key={'year-' + index}>
+                    <Typography className={classnames({[classes.invalidInput]:this.yearInvalid(currentYear)})} variant='body1'>{currentYear}</Typography>
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        }/>
+      ] : undefined
     )
   }
 }

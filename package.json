@@ -1,6 +1,6 @@
 {
   "name": "material-ui-next-datepicker",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Datepicker for material-ui next",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,17 +22,14 @@
     "material-ui-icons": "^1.0.0-beta.35",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-popper": "^0.8.2",
     "react-swipeable-views": "^0.12.13",
     "react-swipeable-views-utils": "^0.12.13",
-    "react-transition-group": "^2.2.1",
-    "react-travel": "^1.3.5",
     "typescript": "^2.7.2"
   },
   "devDependencies": {
     "@types/react": "^16.0.38",
     "@types/react-dom": "^16.0.4",
-    "html-webpack-plugin": "github:webpack-contrib/html-webpack-plugin",
+    "html-webpack-plugin": "^3.2.0",
     "ts-loader": "^4.0.0",
     "webpack": "^4.0.1",
     "webpack-cli": "^2.0.9",
