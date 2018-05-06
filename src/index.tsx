@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import {Today as CalendarIcon} from 'material-ui-icons'
 
 import * as DateUtil from './util/date'
-import DateModal from './DateModal'
+import Calendar from './calendar'
 
 const styles = (theme:Theme):Record<string, React.CSSProperties> => ({
   label: {
@@ -95,10 +95,10 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
       </div>,
       dialog?
       <Dialog open={calendarShow} onClose={this.closeCalendar}>
-        <DateModal ref={dateModal => this.dateModal = ReactDOM.findDOMNode(dateModal)} value={value} onChange={onChange} min={min} max={max} calendarShow={calendarShow} dialog/>
+        <Calendar ref={dateModal => this.dateModal = ReactDOM.findDOMNode(dateModal)} value={value} onChange={onChange} min={min} max={max} calendarShow={calendarShow} dialog/>
       </Dialog> :
       <Popover open={calendarShow} anchorOrigin={placement || {vertical:'top', horizontal:'left'}} anchorEl={this.input as any}>
-        <DateModal ref={dateModal => this.dateModal = ReactDOM.findDOMNode(dateModal)} value={value} onChange={onChange} min={min} max={max} calendarShow={calendarShow}/>
+        <Calendar ref={dateModal => this.dateModal = ReactDOM.findDOMNode(dateModal)} value={value} onChange={onChange} min={min} max={max} calendarShow={calendarShow}/>
       </Popover>
     ])
   }
