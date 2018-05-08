@@ -1,4 +1,4 @@
-const fillInDigit = (number:number, digit:number) => {
+export const fillInDigit = (number:number, digit:number) => {
   const max = Math.pow(10, digit)
   var clean = (number % max).toString()
   while(clean.length < digit) clean = '0' + clean
@@ -65,6 +65,27 @@ export const day = [{
 }]
 export const format = (date:Date, format:string) =>
   [[{
+    keyword: 'mm',
+    word: fillInDigit(date.getMinutes(), 2)
+  }, {
+    keyword: 'm',
+    word: date.getMinutes().toString()
+  }], [{
+    keyword: 'HH',
+    word: fillInDigit(date.getHours(), 2)
+  }, {
+    keyword: 'H',
+    word: date.getHours().toString()
+  }], [{
+    keyword: 'hh',
+    word: fillInDigit(date.getHours() > 12? date.getHours() - 12:date.getHours() === 0? 12:date.getHours(), 2)
+  }, {
+    keyword: 'h',
+    word: (date.getHours() > 12? date.getHours() - 12:date.getHours() === 0? 12:date.getHours()).toString()
+  }], [{
+    keyword: 'a',
+    word: date.getHours() >= 12? 'pm':'am'
+  }], [{
     keyword: 'dd',
     word: fillInDigit(date.getDate(), 2)
   }, {
