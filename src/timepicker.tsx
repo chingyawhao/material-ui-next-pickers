@@ -69,7 +69,7 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
     this.setState({clockShow:false})
   }
   render() {
-    const {name, label, value, onChange, anchorOrigin, transformOrigin, error, fullWidth, min, max, dialog, classes} = this.props
+    const {name, label, value, onChange, anchorOrigin, transformOrigin, error, fullWidth, dialog, okToConfirm, classes} = this.props
     const {focus, clockShow} = this.state
     return ([
       <div key='date-input' ref={input => this.input = ReactDOM.findDOMNode(input)}>
@@ -90,10 +90,10 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
       </div>,
       dialog?
       <Dialog open={clockShow} onClose={this.closeClock}>
-        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} closeClock={this.closeClock}/>
+        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} closeClock={this.closeClock} okToConfirm={okToConfirm}/>
       </Dialog> :
       <Popover open={clockShow} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}>
-        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} closeClock={this.closeClock}/>
+        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} closeClock={this.closeClock} okToConfirm={okToConfirm}/>
       </Popover>
     ])
   }
@@ -112,10 +112,9 @@ export interface TimeFormatInputProps extends React.Props<{}>, StyledComponentPr
     horizontal: 'left' | 'center' | 'right'
   }
   error?: string
-  min?: Date
-  max?: Date
   fullWidth?: boolean
   dialog?: boolean
+  okToConfirm?: boolean
 }
 export interface TimeFormatInputState {
   focus: boolean

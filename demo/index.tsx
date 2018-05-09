@@ -42,8 +42,8 @@ class DemoPage extends React.Component<DemoPageProps, DemoPageState> {
     const {date, min, max, time} = this.state
     return (
       <div className={classes.container}>
-        <DateFormatInput name='date-input' value={date} onChange={this.onChangeDate} min={min} max={max} label='Date'/>
-        <TimeFormatInput name='time-input' value={time} onChange={this.onChangeTime} label='Time'/>
+        <DateFormatInput name='date-input' value={date} onChange={this.onChangeDate} min={min} max={max} label='Date' dialog okToConfirm/>
+        <TimeFormatInput name='time-input' value={time} onChange={this.onChangeTime} label='Time' dialog okToConfirm/>
       </div>
     )
   }

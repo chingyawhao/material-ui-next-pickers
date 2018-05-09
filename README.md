@@ -31,6 +31,7 @@ transformOrigin?: {
   horizontal: 'left' | 'center' | 'right'
 }
 dialog?: boolean
+okToConfirm?: boolean
 ```
 #### Timepicker
 ```
@@ -49,6 +50,7 @@ transformOrigin?: {
   horizontal: 'left' | 'center' | 'right'
 }
 dialog?: boolean
+okToConfirm?: boolean
 ```
 
 ## Basic setup

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as ReactDom from 'react-dom'
 import SwipeableViews from 'react-swipeable-views'
 import {virtualize} from 'react-swipeable-views-utils'
 import * as classnames from 'classnames'
@@ -13,11 +14,9 @@ const VirtualizedSwipeableViews = virtualize(SwipeableViews)
 
 const styles = (theme:Theme):StyleRules => ({
   calendarContainer: {
-    width: (48 * 7) + 'px'
-  },
-  calendarDialog: {
     position: 'relative',
-    maxWidth: 'calc(100vw - 64px)',
+    maxWidth: '100%',
+    width: (48 * 7) + 'px',
     overflow: 'hidden'
   },
   calendarControl: {
@@ -65,7 +64,6 @@ const styles = (theme:Theme):StyleRules => ({
   },
   weekDay: {
     flex: '1 1 auto',
-    height: '38px',
     width: '38px',
     margin: '5px'
   },
@@ -73,14 +71,25 @@ const styles = (theme:Theme):StyleRules => ({
     maxHeight: 'calc(((100vw - 64px) / 7) - 10px)'
   },
   selectedDay: {
-    backgroundColor: theme.palette.primary.dark
+    backgroundColor: theme.palette.primary.dark,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main
+    }
   },
   selectedDayText: {
     color: theme.palette.primary.contrastText
+  },
+  okToConfirmRow: {
+    height: '48px',
+    padding: '0 6px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   }
 })
 @(withStyles as any)(styles)
 class Calendar extends React.Component<CalendarProps, CalendarState> {
+  container:Element
   updateHeight = {
     month: undefined as () => void,
     year: undefined as () => void
@@ -97,12 +106,15 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     }
     this.state = {
       mode: 'month',
+      selected: props.value,
       month: date.getMonth(),
       year: date.getFullYear(),
-      yearIndex: Math.floor(date.getFullYear() / 18)
+      yearIndex: Math.floor(date.getFullYear() / 18),
+      buttonHeight: this.getButtonHeight()
     }
   }
   componentDidMount() {
+    this.resize()
     window.addEventListener('resize', this.resize)
     const {value} = this.props
     if(value) {
@@ -115,17 +127,33 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize)
   }
+  getButtonHeight = () => {
+    const view = this.container? this.container.getBoundingClientRect().width:336
+    return view / 7
+  }
   resize = () => {
     if(this.updateHeight.month) {
-      this.updateHeight.month()
+      this.setState({buttonHeight:this.getButtonHeight()}, this.updateHeight.month)
     }
     if(this.updateHeight.year) {
-      this.updateHeight.year()
+      this.setState({buttonHeight:this.getButtonHeight()}, this.updateHeight.year)
     }
   }
   selectDate = (date:Date) => {
-    this.props.closeCalendar()
-    this.props.onChange(date)
+    const {onChange, closeCalendar, okToConfirm} = this.props
+    if(okToConfirm) {
+      this.setState({selected:date})
+    } else {
+      closeCalendar()
+      onChange(date)
+    }
+  }
+  confirmDate = () => {
+    const {onChange, closeCalendar, okToConfirm} = this.props
+    if(okToConfirm) {
+      closeCalendar()
+      onChange(this.state.selected)
+    }
   }
   showYearsCalendar = () => {
     const {year} = this.state
@@ -262,9 +290,10 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     return daysInWeekInMonth
   }
   render() {
-    const {classes, value, dialog} = this.props
-    const {mode, year, month, yearIndex} = this.state
-    return (<div>
+    const {classes, value, closeCalendar, okToConfirm} = this.props
+    const {mode, buttonHeight, selected, year, month, yearIndex} = this.state
+    const active = okToConfirm? selected:value
+    return (<div ref={container => this.container = container}>
       {mode === 'month'? [
         <div className={classes.calendarControl} key='calendar-month-control'>
           <IconButton classes={{root:classes.calendarControlButton}} disabled={!this.previousMonthValid()} onClick={this.previousMonth}><ChevronLeftIcon/></IconButton>
@@ -272,10 +301,10 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
         </div>,
         <VirtualizedSwipeableViews key='calendar-month-swipeable'
           action={actions => this.updateHeight.year = actions.updateHeight}
-          className={classnames(classes.calendarContainer, {[classes.calendarDialog]:dialog})}
+          className={classes.calendarContainer}
           index={year * 12 + month} animateHeight onChangeIndex={this.changeMonth}
           slideRenderer={({index}) =>
-            this.monthIndexValid(index) && <div key={index} className={classnames(classes.calendarContainer, {[classes.calendarDialog]:dialog})}>
+            this.monthIndexValid(index) && <div key={index} className={classes.calendarContainer}>
               <div className={classes.calendarControlMonth}>
                 <Button onClick={this.showYearsCalendar} classes={{root:classes.calendarMonthTitle}}>
                   {DateUtil.month[index % 12].long + ', ' + Math.floor(index / 12)}
@@ -283,22 +312,40 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
               </div>
               <div className={classes.week}>
                 {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) =>
-                  <Typography key={'weeklabel-' + index} className={classes.labelWeekDay} variant='body1'>{day}</Typography>
+                  <Typography key={'weeklabel-' + index} className={classes.labelWeekDay} variant='body1'
+                    style={{height:buttonHeight, lineHeight:`${buttonHeight}px`}}
+                  >{day}</Typography>
                 )}
               </div>
               {this.generateMonthCalendar(index).map((week, index) =>
-                <div className={classnames(classes.week, {[classes.calendarDialog]:dialog})} key={'week-' + index}>
+                <div className={classes.week} key={'week-' + index}>
                   {week.map((date, index) =>
-                    date? <IconButton classes={{root:classnames({[classes.selectedDay]:value && DateUtil.sameDay(date, value), [classes.weekDayResponse]:dialog}, classes.weekDay)}} disabled={this.dayInvalid(date)} onClick={() => this.selectDate(date)} key={'day-' + index}>
-                      <Typography classes={{root:classnames({[classes.selectedDayText]:value && DateUtil.sameDay(date, value), [classes.invalidInput]:this.dayInvalid(date)})}} variant='body1'>{date.getDate()}</Typography>
+                    date? <IconButton
+                      classes={{root:classnames({[classes.selectedDay]:active && DateUtil.sameDay(date, active)}, classes.weekDay)}}
+                      disabled={this.dayInvalid(date)}
+                      onClick={() => this.selectDate(date)} key={'day-' + index}
+                      style={{height:buttonHeight - 10}}
+                    >
+                      <Typography
+                        classes={{root:classnames({
+                          [classes.selectedDayText]: active && DateUtil.sameDay(date, active),
+                          [classes.invalidInput]: this.dayInvalid(date)
+                        })}}
+                        variant='body1'
+                        style={{height:buttonHeight - 10, lineHeight:`${buttonHeight - 10}px`}}
+                      >{date.getDate()}</Typography>
                     </IconButton> : 
-                    <div className={classnames(classes.weekDay, {[classes.weekDayResponse]:dialog})} key={'day-' + index}/>
+                    <div className={classes.weekDay} style={{height:buttonHeight - 10}} key={'day-' + index}/>
                   )}
                 </div>
               )}
             </div>
           }
-        />
+        />,
+        okToConfirm && <div className={classes.okToConfirmRow}>
+          <Button onClick={closeCalendar}>CANCEL</Button>
+          <Button onClick={this.confirmDate}>OK</Button>
+        </div>
       ] :
       mode === 'year'? [
         <div className={classes.calendarControl} key='calendar-year-control'>
@@ -307,7 +354,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
         </div>,
         <VirtualizedSwipeableViews key='calendar-year-swipeable'
           action={actions => this.updateHeight.year = actions.updateHeight}
-          className={classnames(classes.calendarContainer, {[classes.calendarDialog]:dialog})}
+          className={classes.calendarContainer}
           index={yearIndex} animateHeight onChangeIndex={this.changeYears}
           slideRenderer={({index}) =>
             this.yearIndexValid(index) && <div key={index}>
@@ -316,7 +363,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
                   {(index * 18) + ' - ' + (index * 18 + 17)}
                 </Button>
               </div>
-              <div key={index} className={classnames(classes.calendarContainer, {[classes.calendarDialog]:dialog})}>
+              <div key={index} className={classes.calendarContainer}>
                 {this.generateYearCalendar(index).map((years, index) =>
                   <div className={classes.years} key={'years-' + index}>
                     {years.map((currentYear, index) =>
@@ -340,10 +387,12 @@ export interface CalendarProps extends React.Props<{}>, StyledComponentProps {
   closeCalendar: () => void
   min?: Date
   max?: Date
-  dialog?: boolean
+  okToConfirm?: boolean
 }
 export interface CalendarState {
   mode: 'year' | 'month'
+  buttonHeight: number
+  selected: Date
   month: number
   year: number
   yearIndex: number
