@@ -304,7 +304,8 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
           className={classes.calendarContainer}
           index={year * 12 + month} animateHeight onChangeIndex={this.changeMonth}
           slideRenderer={({index}) =>
-            this.monthIndexValid(index) && <div key={index} className={classes.calendarContainer}>
+            this.monthIndexValid(index)?
+            <div key={index} className={classes.calendarContainer}>
               <div className={classes.calendarControlMonth}>
                 <Button onClick={this.showYearsCalendar} classes={{root:classes.calendarMonthTitle}}>
                   {DateUtil.month[index % 12].long + ', ' + Math.floor(index / 12)}
@@ -339,10 +340,11 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
                   )}
                 </div>
               )}
-            </div>
+            </div>:
+            <div key={index}/>
           }
         />,
-        okToConfirm && <div className={classes.okToConfirmRow}>
+        okToConfirm && <div className={classes.okToConfirmRow} key='calendar-confirm-button'>
           <Button onClick={closeCalendar}>CANCEL</Button>
           <Button onClick={event  => this.confirmDate(event)}>OK</Button>
         </div>
@@ -357,13 +359,14 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
           className={classes.calendarContainer}
           index={yearIndex} animateHeight onChangeIndex={this.changeYears}
           slideRenderer={({index}) =>
-            this.yearIndexValid(index) && <div key={index}>
+            this.yearIndexValid(index)?
+            <div key={index}>
               <div className={classes.calendarControlMonth}>
                 <Button onClick={() => this.selectCalendarYear()} classes={{root:classes.calendarMonthTitle}}>
                   {(index * 18) + ' - ' + (index * 18 + 17)}
                 </Button>
               </div>
-              <div key={index} className={classes.calendarContainer}>
+              <div className={classes.calendarContainer}>
                 {this.generateYearCalendar(index).map((years, index) =>
                   <div className={classes.years} key={'years-' + index}>
                     {years.map((currentYear, index) =>
@@ -374,7 +377,8 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
                   </div>
                 )}
               </div>
-            </div>
+            </div> :
+            <div key={index}/>
           }
         />
       ] : []}
