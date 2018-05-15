@@ -69,7 +69,7 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
     this.setState({clockShow:false})
   }
   render() {
-    const {name, label, value, onChange, anchorOrigin, transformOrigin, error, fullWidth, dialog, okToConfirm, classes} = this.props
+    const {name, label, value, onChange, selectableMinutesInterval, anchorOrigin, transformOrigin, error, fullWidth, dialog, okToConfirm, endIcon, classes} = this.props
     const {focus, clockShow} = this.state
     return ([
       <div key='date-input' ref={input => this.input = ReactDOM.findDOMNode(input)}>
@@ -81,7 +81,7 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
             inputComponent={({value}) => <div className={classes.input}>{value}</div>}
             endAdornment={<InputAdornment position='end'>
               <IconButton onMouseDown={event => event.preventDefault()}>
-                <ClockIcon/>
+                {endIcon? endIcon:<ClockIcon/>}
               </IconButton>
             </InputAdornment>}
           />
@@ -89,11 +89,11 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
         </FormControl>
       </div>,
       dialog?
-      <Dialog open={clockShow} onClose={this.closeClock}>
-        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} closeClock={this.closeClock} okToConfirm={okToConfirm}/>
+      <Dialog key='date-dialog' open={clockShow} onClose={this.closeClock}>
+        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} selectableMinutesInterval={selectableMinutesInterval} closeClock={this.closeClock} okToConfirm={okToConfirm}/>
       </Dialog> :
-      <Popover open={clockShow} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}>
-        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} closeClock={this.closeClock} okToConfirm={okToConfirm}/>
+      <Popover key='date-popover' open={clockShow} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}>
+        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} selectableMinutesInterval={selectableMinutesInterval} closeClock={this.closeClock} okToConfirm={okToConfirm}/>
       </Popover>
     ])
   }
@@ -102,7 +102,8 @@ export interface TimeFormatInputProps extends React.Props<{}>, StyledComponentPr
   name: string
   label?: string
   value: Date
-  onChange: (value:Date) => void
+  onChange: (value:Date, event?:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void
+  selectableMinutesInterval?: number
   anchorOrigin?: {
     vertical: 'top' | 'center' | 'bottom'
     horizontal: 'left' | 'center' | 'right'
@@ -115,6 +116,7 @@ export interface TimeFormatInputProps extends React.Props<{}>, StyledComponentPr
   fullWidth?: boolean
   dialog?: boolean
   okToConfirm?: boolean
+  endIcon?: Node
 }
 export interface TimeFormatInputState {
   focus: boolean

@@ -171,37 +171,37 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     const touch = event.nativeEvent.touches[event.nativeEvent.touches.length - 1]
     return {x:touch.pageX, y:touch.pageY}
   }
-  changeValue = (label:'hour' | 'minute', selecting:number) => {
+  changeValue = (label:'hour' | 'minute', selecting:number, event:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => {
     const {value, onChange, okToConfirm} = this.props
     const {selected} = this.state
     const date = new Date((okToConfirm? selected:value) || defaultTime)
-    if(label === 'hour') {
+    if(selecting && label === 'hour') {
       date.setHours(selecting + ((value && value.getHours() >= 12)? 12:0))
-    } else if(label === 'minute') {
+    } else if(selecting && label === 'minute') {
       date.setMinutes(selecting)
     }
-    if(okToConfirm) {
+    if(selecting && okToConfirm) {
       this.setState({selecting:true, selected:date})
-    } else {
-      this.setState({selecting:true}, () => onChange(date))
+    } else if(selecting) {
+      this.setState({selecting:true}, () => onChange(date, event))
     }
   }
   mouseSelectClock = (event:React.MouseEvent<HTMLDivElement>, label:'hour' | 'minute', options:number[]) => {
     event.preventDefault()
     const selected = this.getValue(options, this.getMouseTargetPoint(event), this.getOriginPoint())
-    this.setState({selecting:true}, () => this.changeValue(label, selected))
+    this.setState({selecting:true}, () => this.changeValue(label, selected, event))
   }
   touchSelectClock = (event:React.TouchEvent<HTMLDivElement>, label:'hour' | 'minute', options:number[]) => {
     event.preventDefault()
     const selected = this.getValue(options, this.getTouchTargetPoint(event), this.getOriginPoint())
-    this.setState({selecting:true}, () => this.changeValue(label, selected))
+    this.setState({selecting:true}, () => this.changeValue(label, selected, event))
   }
   mouseHoverClock = (event:React.MouseEvent<HTMLDivElement>, label:'hour' | 'minute', options:number[]) => {
     event.preventDefault()
     const {selecting} = this.state
     const selected = this.getValue(options, this.getMouseTargetPoint(event), this.getOriginPoint())
     if(selecting && selected !== undefined) {
-      this.changeValue(label, selected)
+      this.changeValue(label, selected, event)
     }
   }
   touchHoverClock = (event:React.TouchEvent<HTMLDivElement>, label:'hour' | 'minute', options:number[]) => {
@@ -210,7 +210,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     const target = {x:touch.pageX, y:touch.pageY}
     const selected = this.getValue(options, this.getTouchTargetPoint(event), this.getOriginPoint())
     if(selected !== undefined) {
-      this.changeValue(label, selected)
+      this.changeValue(label, selected, event)
     }
   }
   confirmClock = (event:React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, label:'hour' | 'minute') => {
@@ -222,17 +222,17 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
       this.setState({selecting:false}, okToConfirm? undefined:closeClock)
     }
   }
-  confirmTime = () => {
+  confirmTime = (event:React.MouseEvent<HTMLElement>) => {
     const {onChange, closeClock, okToConfirm} = this.props
     if(okToConfirm) {
       closeClock()
-      onChange(this.state.selected)
+      onChange(this.state.selected, event)
     }
   }
   clickSetMode = (mode:'hour' | 'minute') => {
     this.setState({mode})
   }
-  clickAmPm = (ampm:'am' | 'pm') => {
+  clickAmPm = (ampm:'am' | 'pm', event:React.MouseEvent<HTMLElement>) => {
     const {value, onChange, okToConfirm} = this.props
     const {selected} = this.state
     const date = new Date((okToConfirm? selected:value) || defaultTime)
@@ -245,7 +245,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     if(okToConfirm) {
       this.setState({selected:date})
     } else {
-      onChange(date)
+      onChange(date, event)
     }
   }
   getSelectedDate = () => {
@@ -263,10 +263,15 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     }
   }
   render() {
-    const {classes, value, okToConfirm, closeClock} = this.props
+    const {classes, value, okToConfirm, closeClock, selectableMinutesInterval} = this.props
     const {mode, selecting, clockRadius} = this.state
     const hours = Array.apply(undefined, {length:12}).map((number, index) => index === 0? 12:index)
-    const minutes = Array.apply(undefined, {length:60}).map((number, index) => index)
+    const minutes = Array.apply(undefined, {length:60}).map((number, index) => !selectableMinutesInterval?
+      index:
+      index % selectableMinutesInterval === 0?
+      index:
+      undefined
+    )
     const selected = this.getSelectedDate()
     const selectAngle = (
       mode === 'hour'?
@@ -288,8 +293,8 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
             onClick={() => this.clickSetMode('minute')}
           >{DateUtil.fillInDigit(selected.minute, 2)}</Typography>
           <div className={classes.ampmButtons}>
-            <Button color={selected.ampm === 'am'? 'primary':'default'} classes={{root:classes.ampmButton}} onClick={() => this.clickAmPm('am')}>AM</Button>
-            <Button color={selected.ampm === 'pm'? 'primary':'default'} classes={{root:classes.ampmButton}} onClick={() => this.clickAmPm('pm')}>PM</Button>
+            <Button color={selected.ampm === 'am'? 'primary':'default'} classes={{root:classes.ampmButton}} onClick={event => this.clickAmPm('am', event)}>AM</Button>
+            <Button color={selected.ampm === 'pm'? 'primary':'default'} classes={{root:classes.ampmButton}} onClick={event => this.clickAmPm('pm', event)}>PM</Button>
           </div>
         </div>
       </div>
@@ -331,7 +336,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
           {minutes.map((minute, index) => {
             const angle = index / minutes.length * 2 * Math.PI - (Math.PI / 6 * 3)
             if(minute % 5 === 0) {
-              return <Typography key={minute} className={classnames(
+              return <Typography key={index} className={classnames(
                 classes.clockText,
                 {[classes.clockTextSelected]:mode === 'minute' && selected.minute === index},
                 {[classes.clockTextFaded]:mode !== 'minute'}
@@ -344,7 +349,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
                 {minute}
               </Typography>
             } else {
-              return <div key={minute} className={classnames(
+              return <div key={index} className={classnames(
                 classes.minuteDot,
                 {[classes.minuteDotSelected]:mode === 'minute' && selected.minute === minute},
                 {[classes.clockTextFaded]:mode !== 'minute'}
@@ -360,15 +365,16 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
       </div>
       {okToConfirm && <div className={classes.okToConfirmRow}>
         <Button onClick={closeClock}>CANCEL</Button>
-        <Button onClick={this.confirmTime}>OK</Button>
+        <Button onClick={event => this.confirmTime(event)}>OK</Button>
       </div>}
     </div>)
   }
 }
 export interface CalendarProps extends React.Props<{}>, StyledComponentProps {
   value: Date
-  onChange: (value:Date) => void
+  onChange: (value:Date, event?:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void
   closeClock: () => void
+  selectableMinutesInterval?: number
   okToConfirm?: boolean
 }
 export interface CalendarState {

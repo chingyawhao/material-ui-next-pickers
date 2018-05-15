@@ -16,7 +16,7 @@ npm install material-ui-next-pickers --save
 ```
 name: string
 value: Date
-onChange: (value:Date) => void
+onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
 label?: string
 error?: string
 min?: Date
@@ -32,12 +32,14 @@ transformOrigin?: {
 }
 dialog?: boolean
 okToConfirm?: boolean
+endIcon?: Node
 ```
 #### Timepicker
 ```
 name: string
 value: Date
-onChange: (value:Date) => void
+onChange: (value:Date, event?:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void
+selectableMinutesInterval?: number
 label?: string
 error?: string
 fullWidth?: boolean
@@ -51,6 +53,7 @@ transformOrigin?: {
 }
 dialog?: boolean
 okToConfirm?: boolean
+endIcon?: Node
 ```
 
 ## Basic setup

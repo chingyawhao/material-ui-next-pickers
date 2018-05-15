@@ -8,6 +8,7 @@ module.exports = {
     'webpack-dev-server/client?',
     './demo'
   ]:['./demo'],
+  mode: 'development',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].bundle.js',

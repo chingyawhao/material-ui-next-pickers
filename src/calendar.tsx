@@ -139,20 +139,20 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
       this.setState({buttonHeight:this.getButtonHeight()}, this.updateHeight.year)
     }
   }
-  selectDate = (date:Date) => {
+  selectDate = (date:Date, event:React.MouseEvent<HTMLElement>) => {
     const {onChange, closeCalendar, okToConfirm} = this.props
     if(okToConfirm) {
       this.setState({selected:date})
     } else {
       closeCalendar()
-      onChange(date)
+      onChange(date, event)
     }
   }
-  confirmDate = () => {
+  confirmDate = (event:React.MouseEvent<HTMLElement>) => {
     const {onChange, closeCalendar, okToConfirm} = this.props
     if(okToConfirm) {
       closeCalendar()
-      onChange(this.state.selected)
+      onChange(this.state.selected, event)
     }
   }
   showYearsCalendar = () => {
@@ -323,7 +323,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
                     date? <IconButton
                       classes={{root:classnames({[classes.selectedDay]:active && DateUtil.sameDay(date, active)}, classes.weekDay)}}
                       disabled={this.dayInvalid(date)}
-                      onClick={() => this.selectDate(date)} key={'day-' + index}
+                      onClick={event => this.selectDate(date, event)} key={'day-' + index}
                       style={{height:buttonHeight - 10}}
                     >
                       <Typography
@@ -344,7 +344,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
         />,
         okToConfirm && <div className={classes.okToConfirmRow}>
           <Button onClick={closeCalendar}>CANCEL</Button>
-          <Button onClick={this.confirmDate}>OK</Button>
+          <Button onClick={event  => this.confirmDate(event)}>OK</Button>
         </div>
       ] :
       mode === 'year'? [
@@ -383,7 +383,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
 }
 export interface CalendarProps extends React.Props<{}>, StyledComponentProps {
   value: Date
-  onChange: (value:Date) => void
+  onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
   closeCalendar: () => void
   min?: Date
   max?: Date
