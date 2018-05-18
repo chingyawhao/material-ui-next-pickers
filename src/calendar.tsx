@@ -351,8 +351,8 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
       ] :
       mode === 'year'? [
         <div className={classes.calendarControl} key='calendar-year-control'>
-          <IconButton disabled={!this.previousYearsValid()} onClick={this.previousYears}><ChevronLeftIcon/></IconButton>
-          <IconButton disabled={!this.nextYearsValid()} onClick={this.nextYears}><ChevronRightIcon/></IconButton>
+          <IconButton classes={{root:classes.calendarControlButton}} disabled={!this.previousYearsValid()} onClick={this.previousYears}><ChevronLeftIcon/></IconButton>
+          <IconButton classes={{root:classes.calendarControlButton}} disabled={!this.nextYearsValid()} onClick={this.nextYears}><ChevronRightIcon/></IconButton>
         </div>,
         <VirtualizedSwipeableViews key='calendar-year-swipeable'
           action={actions => this.updateHeight.year = actions.updateHeight}
