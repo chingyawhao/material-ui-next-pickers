@@ -1,9 +1,9 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import * as classnames from 'classnames'
-import {withStyles, Theme, StyledComponentProps, StyleRules} from 'material-ui/styles'
-import Typography from 'material-ui/Typography'
-import Button from 'material-ui/Button'
+import {withStyles, Theme, StyledComponentProps, StyleRules} from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
 import {ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon} from '@material-ui/icons'
 
 import * as DateUtil from './date'
@@ -128,7 +128,7 @@ const styles = (theme:Theme):StyleRules => ({
   }
 })
 @(withStyles as any)(styles)
-class Calendar extends React.Component<CalendarProps, CalendarState> {
+class Clock extends React.Component<ClockProps, ClockState> {
   clockface:Element
   constructor(props) {
     super(props)
@@ -278,27 +278,27 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
       selected.hour / hours.length :
       selected.minute / minutes.length
     ) * 2 * Math.PI - (Math.PI / 6 * 3)
-    return (<div>
-      <div className={classes.clockDigitalContainer}>
-        <div className={classnames(classes.clockDigitContainer, classes.hourDigitContainer)}>
+    return (<div className={classes.root}>
+      <div className={classnames((classes as any).clockDigitalContainer, classes.digitalContainer)}>
+        <div className={classnames((classes as any).clockDigitContainer, (classes as any).hourDigitContainer)}>
           <Typography color={mode === 'hour'? 'primary':'default'} variant='display3'
-            classes={{root:classnames(classes.digitText, classes.hourDigitText)}}
+            classes={{root:classnames((classes as any).digitText, (classes as any).hourDigitText)}}
             onClick={() => this.clickSetMode('hour')}
           >{selected.hour === 0? 12:selected.hour}</Typography>
         </div>
-        <div><Typography variant='display3' classes={{root:classes.colonDigit}}>:</Typography></div>
-        <div className={classnames(classes.clockDigitContainer, classes.miniteDigitContainer)}>
+        <div><Typography variant='display3' classes={{root:(classes as any).colonDigit}}>:</Typography></div>
+        <div className={classnames((classes as any).clockDigitContainer, (classes as any).miniteDigitContainer)}>
           <Typography color={mode === 'minute'? 'primary':'default'} variant='display3'
-            classes={{root:classes.digitText}}
+            classes={{root:(classes as any).digitText}}
             onClick={() => this.clickSetMode('minute')}
           >{DateUtil.fillInDigit(selected.minute, 2)}</Typography>
-          <div className={classes.ampmButtons}>
-            <Button color={selected.ampm === 'am'? 'primary':'default'} classes={{root:classes.ampmButton}} onClick={event => this.clickAmPm('am', event)}>AM</Button>
-            <Button color={selected.ampm === 'pm'? 'primary':'default'} classes={{root:classes.ampmButton}} onClick={event => this.clickAmPm('pm', event)}>PM</Button>
+          <div className={(classes as any).ampmButtons}>
+            <Button color={selected.ampm === 'am'? 'primary':'default'} classes={{root:(classes as any).ampmButton}} onClick={event => this.clickAmPm('am', event)}>AM</Button>
+            <Button color={selected.ampm === 'pm'? 'primary':'default'} classes={{root:(classes as any).ampmButton}} onClick={event => this.clickAmPm('pm', event)}>PM</Button>
           </div>
         </div>
       </div>
-      <div key='clock' className={classes.clockAnalogContainer}
+      <div key='clock' className={(classes as any).clockAnalogContainer}
         onMouseDown={event => this.mouseSelectClock(event, mode, mode === 'hour'? hours:minutes)}
         onTouchStart={event => this.touchSelectClock(event, mode, mode === 'hour'? hours:minutes)}
         onMouseMove={event => this.mouseHoverClock(event, mode, mode === 'hour'? hours:minutes)}
@@ -306,24 +306,24 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
         onMouseUp={event => this.confirmClock(event, mode)}
         onTouchEnd={event => this.confirmClock(event, mode)}
       >
-        <div className={classes.clockBackground} ref={clockface => this.clockface = clockface}>
-          <div className={classes.clockHandContainer} 
+        <div className={(classes as any).clockBackground} ref={clockface => this.clockface = clockface}>
+          <div className={(classes as any).clockHandContainer} 
             style={{height:clockRadius, paddingBottom:clockRadius,
               transition: selecting? '':'transform 600ms ease-in-out',
               transform:`rotate(${selectAngle + (Math.PI / 6 * 3)}rad)`
             }}
           >
-            <div className={classes.clockHand}>
-              <div className={classes.clockHandHead}/>
-              <div className={classes.clockHandTail}/>
+            <div className={classnames((classes as any).clockHand, classes.hand)}>
+              <div className={(classes as any).clockHandHead}/>
+              <div className={(classes as any).clockHandTail}/>
             </div>
           </div>
           {hours.map((hour, index) => {
             const angle = index / hours.length * 2 * Math.PI - (Math.PI / 6 * 3)
             return <Typography key={hour} className={classnames(
-              classes.clockText,
-              {[classes.clockTextSelected]:mode === 'hour' && selected.hour === index},
-              {[classes.clockTextFaded]:mode !== 'hour'}
+              (classes as any).clockText,
+              {[(classes as any).clockTextSelected]:mode === 'hour' && selected.hour === index},
+              {[(classes as any).clockTextFaded]:mode !== 'hour'}
             )}
               style={{
                 transition: selecting? 'opacity 600ms ease-in-out':'opacity 600ms ease-in-out, color 0ms 600ms',
@@ -337,9 +337,9 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
             const angle = index / minutes.length * 2 * Math.PI - (Math.PI / 6 * 3)
             if(minute % 5 === 0) {
               return <Typography key={index} className={classnames(
-                classes.clockText,
-                {[classes.clockTextSelected]:mode === 'minute' && selected.minute === index},
-                {[classes.clockTextFaded]:mode !== 'minute'}
+                (classes as any).clockText,
+                {[`${(classes as any).clockTextSelected} ${classes.textSelected}`]:mode === 'minute' && selected.minute === index},
+                {[(classes as any).clockTextFaded]:mode !== 'minute'}
               )}
                 style={{
                   transition: selecting? 'opacity 600ms ease-in-out':'opacity 600ms ease-in-out, color 0ms 600ms',
@@ -350,9 +350,9 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
               </Typography>
             } else {
               return <div key={index} className={classnames(
-                classes.minuteDot,
-                {[classes.minuteDotSelected]:mode === 'minute' && selected.minute === minute},
-                {[classes.clockTextFaded]:mode !== 'minute'}
+                (classes as any).minuteDot,
+                {[(classes as any).minuteDotSelected]:mode === 'minute' && selected.minute === minute},
+                {[(classes as any).clockTextFaded]:mode !== 'minute'}
               )}
                 style={{
                   transition: selecting? 'opacity 600ms ease-in-out':'opacity 600ms ease-in-out, background 0ms 600ms',
@@ -363,25 +363,33 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
           })}
         </div>
       </div>
-      {okToConfirm && <div className={classes.okToConfirmRow}>
+      {okToConfirm && <div className={(classes as any).okToConfirmRow}>
         <Button onClick={closeClock}>CANCEL</Button>
         <Button onClick={event => this.confirmTime(event)}>OK</Button>
       </div>}
     </div>)
   }
 }
-export interface CalendarProps extends React.Props<{}>, StyledComponentProps {
+export interface ClockProps extends React.Props<{}>, StyledComponentProps {
   value: Date
   onChange: (value:Date, event?:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void
   closeClock: () => void
   selectableMinutesInterval?: number
   okToConfirm?: boolean
+  classes?: {
+    root?: string
+    digitalContainer?: string
+    clockBackground?: string
+    hand?: string
+    textSelected?: string
+    minuteDotSelected?: string
+  }
 }
-export interface CalendarState {
+export interface ClockState {
   mode: 'hour' | 'minute'
   selected: Date
   selecting: boolean
   clockRadius: number
 }
 
-export default Calendar
+export default Clock

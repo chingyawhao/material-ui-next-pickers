@@ -15,45 +15,89 @@ npm install material-ui-next-pickers --save
 #### Datepicker
 ```
 name: string
+label?: string
 value: Date
 onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
-label?: string
+anchorOrigin?: {
+  vertical: 'top' | 'center' | 'bottom'
+  horizontal: 'left' | 'center' | 'right'
+}
+transformOrigin?: {
+  vertical: 'top' | 'center' | 'bottom'
+  horizontal: 'left' | 'center' | 'right'
+}
+disabled?: boolean
 error?: string
 min?: Date
 max?: Date
 fullWidth?: boolean
-anchorOrigin?: {
-  vertical: 'top' | 'center' | 'bottom',
-  horizontal: 'left' | 'center' | 'right'
-}
-transformOrigin?: {
-  vertical: 'top' | 'center' | 'bottom',
-  horizontal: 'left' | 'center' | 'right'
-}
 dialog?: boolean
 okToConfirm?: boolean
 endIcon?: Node
+className?: string
+InputLabelProps?: InputLabelProps
+InputProps?: InputProps
+FormHelperTextProps?: FormHelperTextProps
+CalendarProps?: CalendarProps
+```
+#### Calendar
+```
+value: Date
+onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
+closeCalendar: () => void
+min?: Date
+max?: Date
+okToConfirm?: boolean
+classes?: {
+  root?: string
+  selectedDay?: string
+  selectedDayText?: string
+  selectedYear?: string
+  selectedYearText?: string
+}
 ```
 #### Timepicker
 ```
 name: string
+label?: string
 value: Date
 onChange: (value:Date, event?:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void
 selectableMinutesInterval?: number
-label?: string
-error?: string
-fullWidth?: boolean
 anchorOrigin?: {
-  vertical: 'top' | 'center' | 'bottom',
+  vertical: 'top' | 'center' | 'bottom'
   horizontal: 'left' | 'center' | 'right'
 }
 transformOrigin?: {
-  vertical: 'top' | 'center' | 'bottom',
+  vertical: 'top' | 'center' | 'bottom'
   horizontal: 'left' | 'center' | 'right'
 }
+disabled?: boolean
+error?: string
+fullWidth?: boolean
 dialog?: boolean
 okToConfirm?: boolean
 endIcon?: Node
+className?: string
+InputLabelProps?: InputLabelProps
+InputProps?: InputProps
+FormHelperTextProps?: FormHelperTextProps
+ClockProps?: ClockProps
+```
+#### Clock
+```
+value: Date
+onChange: (value:Date, event?:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void
+closeClock: () => void
+selectableMinutesInterval?: number
+okToConfirm?: boolean
+classes?: {
+  root?: string
+  digitalContainer?: string
+  clockBackground?: string
+  hand?: string
+  textSelected?: string
+  minuteDotSelected?: string
+}
 ```
 
 ## Basic setup

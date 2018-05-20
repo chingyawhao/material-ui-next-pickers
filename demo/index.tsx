@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import {MuiThemeProvider, createMuiTheme, withStyles, StyledComponentProps, Theme} from 'material-ui/styles'
+import {MuiThemeProvider, createMuiTheme, withStyles, StyledComponentProps, Theme} from '@material-ui/core/styles'
 
 const theme = createMuiTheme()
 
