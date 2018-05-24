@@ -37,6 +37,7 @@ const styles = (theme:Theme):StyleRules => ({
 })
 @(withStyles as any)(styles)
 class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatInputState> {
+  action:any = {}
   input:Element
   calendar:Element
   constructor(props) {
@@ -102,10 +103,24 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
       </div>,
       dialog?
       <Dialog key='date-dialog' open={calendarShow} onClose={this.closeCalendar}>
-        <Calendar ref={calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element} value={value} onChange={onChange} min={min} max={max} closeCalendar={this.closeCalendar} okToConfirm={okToConfirm} {...CalendarProps as any}/>
+        <Calendar
+          ref={calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element}
+          value={value} onChange={onChange} min={min} max={max}
+          closeCalendar={this.closeCalendar} okToConfirm={okToConfirm}
+          {...CalendarProps as any}
+        />
       </Dialog> :
-      <Popover key='date-popover' open={calendarShow} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}>
-        <Calendar ref={calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element} value={value} onChange={onChange} min={min} max={max} closeCalendar={this.closeCalendar} okToConfirm={okToConfirm} {...CalendarProps as any}/>
+      <Popover key='date-popover'
+        onEntered={() => {if(this.action.resize) this.action.resize()}}
+        open={calendarShow} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}
+      >
+        <Calendar
+          action={action => this.action.resize = action.resize}
+          ref={calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element}
+          value={value} onChange={onChange} min={min} max={max}
+          closeCalendar={this.closeCalendar} okToConfirm={okToConfirm}
+          {...CalendarProps as any}
+        />
       </Popover>
     ])
   }

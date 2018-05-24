@@ -132,6 +132,11 @@ class Clock extends React.Component<ClockProps, ClockState> {
   clockface:Element
   constructor(props) {
     super(props)
+    if(props.action) {
+      props.action({
+        resize: this.setClockRadius
+      })
+    }
     this.state = {
       mode: 'hour',
       selected: props.value,
@@ -140,7 +145,8 @@ class Clock extends React.Component<ClockProps, ClockState> {
     }
   }
   componentDidMount() {
-    setTimeout(this.setClockRadius, 100)
+    if(!this.props.action)
+      this.setClockRadius()
     window.addEventListener('resize', this.setClockRadius)
   }
   componentWillUnmount() {
@@ -371,6 +377,7 @@ class Clock extends React.Component<ClockProps, ClockState> {
   }
 }
 export interface ClockProps extends React.Props<{}>, StyledComponentProps {
+  action: (actions:any) => void
   value: Date
   onChange: (value:Date, event?:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void
   closeClock: () => void

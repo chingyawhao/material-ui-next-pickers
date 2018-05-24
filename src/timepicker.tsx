@@ -37,6 +37,7 @@ const styles = (theme:Theme):StyleRules => ({
 })
 @(withStyles as any)(styles)
 class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatInputState> {
+  action:any = {}
   input:Element | Text
   clock:Element | Text
   constructor(props) {
@@ -97,10 +98,22 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
       </div>,
       dialog?
       <Dialog key='date-dialog' open={clockShow} onClose={this.closeClock}>
-        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} selectableMinutesInterval={selectableMinutesInterval} closeClock={this.closeClock} okToConfirm={okToConfirm} {...ClockProps as any}/>
+        <Clock
+          ref={clock => this.clock = ReactDOM.findDOMNode(clock)}
+          value={value} onChange={onChange} selectableMinutesInterval={selectableMinutesInterval}
+          closeClock={this.closeClock} okToConfirm={okToConfirm} {...ClockProps as any}
+        />
       </Dialog> :
-      <Popover key='date-popover' open={clockShow} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}>
-        <Clock ref={clock => this.clock = ReactDOM.findDOMNode(clock)} value={value} onChange={onChange} selectableMinutesInterval={selectableMinutesInterval} closeClock={this.closeClock} okToConfirm={okToConfirm} {...ClockProps as any}/>
+      <Popover key='date-popover' open={clockShow}
+        onEntered={() => {if(this.action.resize) this.action.resize()}}
+        anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}
+      >
+        <Clock
+          action={action => this.action.resize = action.resize}
+          ref={clock => this.clock = ReactDOM.findDOMNode(clock)}
+          value={value} onChange={onChange} selectableMinutesInterval={selectableMinutesInterval}
+          closeClock={this.closeClock} okToConfirm={okToConfirm} {...ClockProps as any}
+        />
       </Popover>
     ])
   }

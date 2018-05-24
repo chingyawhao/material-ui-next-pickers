@@ -42,6 +42,7 @@ CalendarProps?: CalendarProps
 ```
 #### Calendar
 ```
+action: (actions:any) => void // only resize event
 value: Date
 onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
 closeCalendar: () => void
@@ -85,6 +86,7 @@ ClockProps?: ClockProps
 ```
 #### Clock
 ```
+action: (actions:any) => void // only resize event
 value: Date
 onChange: (value:Date, event?:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void
 closeClock: () => void

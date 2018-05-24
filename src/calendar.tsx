@@ -104,6 +104,11 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     } else if(min && now.getTime() < min.getTime()) {
       date = new Date(min.getTime())
     }
+    if(props.action) {
+      props.action({
+        resize: this.resize
+      })
+    }
     this.state = {
       mode: 'month',
       selected: props.value,
@@ -114,7 +119,8 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     }
   }
   componentDidMount() {
-    this.resize()
+    if(!this.props.action)
+      this.resize()
     window.addEventListener('resize', this.resize)
     const {value} = this.props
     if(value) {
@@ -405,6 +411,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
   }
 }
 export interface CalendarProps extends React.Props<{}>, StyledComponentProps {
+  action: (actions:any) => void
   value: Date
   onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
   closeCalendar: () => void

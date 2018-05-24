@@ -1,6 +1,6 @@
 {
   "name": "material-ui-next-pickers",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Datepicker and timepicker for material-ui next",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
