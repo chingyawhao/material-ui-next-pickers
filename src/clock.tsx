@@ -140,7 +140,7 @@ class Clock extends React.Component<ClockProps, ClockState> {
     }
   }
   componentDidMount() {
-    this.setClockRadius()
+    setTimeout(this.setClockRadius, 100)
     window.addEventListener('resize', this.setClockRadius)
   }
   componentWillUnmount() {
