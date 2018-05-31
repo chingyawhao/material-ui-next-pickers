@@ -77,6 +77,16 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
   closeCalendar = () => {
     this.setState({calendarShow:false})
   }
+  dateValue = (date:Date) => {
+    const {dateFormat} = this.props
+    if(typeof dateFormat === 'string') {
+      return DateUtil.format(date, dateFormat)
+    } else if(typeof dateFormat === 'function') {
+      return dateFormat(date)
+    } else {
+      return DateUtil.format(date, 'EEE, MMMM d, yyyy')
+    }
+  }
   render() {
     const {name, label, value, onChange, anchorOrigin, transformOrigin, disabled, error, fullWidth, min, max, dialog, okToConfirm, endIcon, className, InputLabelProps, InputProps, FormHelperTextProps, CalendarProps, classes} = this.props
     const {focus, calendarShow} = this.state
@@ -87,7 +97,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
             {...{...InputLabelProps, classes:InputLabelProps && InputLabelProps.classes? {root:classes.label, ...InputLabelProps.classes}:{root:classes.label}}}>
             {label}
           </InputLabel>}
-          <Input name={name} value={value? DateUtil.format(value, 'EEE, MMMM d, yyyy'):'\u00a0'}
+          <Input name={name} value={value? this.dateValue(value):'\u00a0'}
             onFocus={() => this.onFocus(true)}
             onBlur={() => this.onFocus(false)}
             inputComponent={({value}) => <div className={classes.input}>{value}</div>}
@@ -142,6 +152,7 @@ export interface DateFormatInputProps extends React.Props<{}>, StyledComponentPr
   error?: string
   min?: Date
   max?: Date
+  dateFormat?: string | ((date:Date) => string)
   fullWidth?: boolean
   dialog?: boolean
   okToConfirm?: boolean

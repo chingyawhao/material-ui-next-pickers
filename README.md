@@ -30,6 +30,7 @@ disabled?: boolean
 error?: string
 min?: Date
 max?: Date
+dateFormat?: string | ((date:Date) => string)
 fullWidth?: boolean
 dialog?: boolean
 okToConfirm?: boolean
