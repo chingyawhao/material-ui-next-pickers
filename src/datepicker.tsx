@@ -10,7 +10,7 @@ import Input, {InputProps} from '@material-ui/core/Input'
 import InputLabel, {InputLabelProps} from '@material-ui/core/InputLabel'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton'
-import {Today as CalendarIcon} from '@material-ui/icons'
+import Today from '@material-ui/icons/Today'
 
 import * as DateUtil from './date'
 import Calendar, {CalendarProps} from './calendar'
@@ -103,7 +103,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
             inputComponent={({value}) => <div className={classes.input}>{value}</div>}
             endAdornment={<InputAdornment position='end'>
               <IconButton onMouseDown={event => event.preventDefault()}>
-                {endIcon? endIcon:<CalendarIcon/>}
+                {endIcon? endIcon:<Today/>}
               </IconButton>
             </InputAdornment>}
             {...InputProps}

@@ -10,7 +10,7 @@ import Input, {InputProps} from '@material-ui/core/Input'
 import InputLabel, {InputLabelProps} from '@material-ui/core/InputLabel'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton'
-import {AccessTime as ClockIcon} from '@material-ui/icons'
+import AccessTime from '@material-ui/icons/AccessTime'
 
 import * as DateUtil from './date'
 import Clock, {ClockProps} from './clock'
@@ -88,7 +88,7 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
             inputComponent={({value}) => <div className={classes.input}>{value}</div>}
             endAdornment={<InputAdornment position='end'>
               <IconButton onMouseDown={event => event.preventDefault()}>
-                {endIcon? endIcon:<ClockIcon/>}
+                {endIcon? endIcon:<AccessTime/>}
               </IconButton>
             </InputAdornment>}
             {...InputProps}
