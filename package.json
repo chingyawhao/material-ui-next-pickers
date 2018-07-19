@@ -1,11 +1,17 @@
 {
   "name": "material-ui-next-pickers",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Datepicker and timepicker for material-ui next",
+  "keywords": ["material-ui", "next", "date", "time", "datepicker", "timepicker", "calendar", "clock"],
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/chingyawhao/material-ui-next-pickers"
+  },
+  "homepage": "http://chingyawhao.github.io/material-ui-pickers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "module": "tsc --declaration true --outDir dist",
+    "module": "tsc --rootDir src --declaration true --outDir dist",
     "start:dev": "NODE_ENV=development webpack-dev-server --content-base app --history-api-fallback",
     "compile": "NODE_ENV=production webpack --display-error-details",
     "test": "echo \"Error: no test specified\" && exit 1"
