@@ -7,7 +7,8 @@ import {withStyles, Theme, StyledComponentProps, StyleRules} from '@material-ui/
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
-import {ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon} from '@material-ui/icons'
+import ChevronLeft from '@material-ui/icons/ChevronLeft'
+import ChevronRight from '@material-ui/icons/ChevronRight'
 
 import * as DateUtil from './date'
 const VirtualizedSwipeableViews = virtualize(SwipeableViews)
@@ -303,10 +304,10 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
       {mode === 'month'? [
         <div className={(classes as any).calendarControl} key='calendar-month-control'>
           <IconButton classes={{root:(classes as any).calendarControlButton}} disabled={!this.previousMonthValid()} onClick={this.previousMonth}>
-            <ChevronLeftIcon/>
+            <ChevronLeft/>
           </IconButton>
           <IconButton classes={{root:(classes as any).calendarControlButton}} disabled={!this.nextMonthValid()} onClick={this.nextMonth}>
-            <ChevronRightIcon/>
+            <ChevronRight/>
           </IconButton>
         </div>,
         <VirtualizedSwipeableViews key='calendar-month-swipeable'
@@ -362,10 +363,10 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
       mode === 'year'? [
         <div className={(classes as any).calendarControl} key='calendar-year-control'>
           <IconButton classes={{root:(classes as any).calendarControlButton}} disabled={!this.previousYearsValid()} onClick={this.previousYears}>
-            <ChevronLeftIcon/>
+            <ChevronLeft/>
           </IconButton>
           <IconButton classes={{root:(classes as any).calendarControlButton}} disabled={!this.nextYearsValid()} onClick={this.nextYears}>
-            <ChevronRightIcon/>
+            <ChevronRight/>
           </IconButton>
         </div>,
         <VirtualizedSwipeableViews key='calendar-year-swipeable'
