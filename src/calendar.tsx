@@ -281,7 +281,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
       month: index % 12
     }
     const firstDay = new Date(calendarFocus.year, calendarFocus.month, 1)
-    const daysInWeekInMonth:Date[][] = [Array.apply(undefined, {length:firstDay.getDay()})]
+    const daysInWeekInMonth:Date[][] = [Array(firstDay.getDay()).fill(undefined)]
     var counter = firstDay.getDay()
     for(let day = firstDay; day.getMonth() === calendarFocus.month; day = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1)) {
       if(!daysInWeekInMonth[Math.floor(counter / 7)]) {

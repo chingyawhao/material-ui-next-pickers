@@ -270,8 +270,8 @@ class Clock extends React.Component<ClockProps, ClockState> {
   render() {
     const {classes, value, okToConfirm, closeClock, selectableMinutesInterval} = this.props
     const {mode, selecting, clockRadius} = this.state
-    const hours = Array.apply(undefined, {length:12}).map((number, index) => index === 0? 12:index)
-    const minutes = Array.apply(undefined, {length:60}).map((number, index) => !selectableMinutesInterval?
+    const hours = Array(12).fill(undefined).map((number, index) => index === 0? 12:index)
+    const minutes = Array(60).fill(undefined).map((number, index) => !selectableMinutesInterval?
       index:
       index % selectableMinutesInterval === 0?
       index:
