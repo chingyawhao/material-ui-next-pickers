@@ -2,7 +2,16 @@
   "name": "material-ui-next-pickers",
   "version": "0.0.12",
   "description": "Datepicker and timepicker for material-ui next",
-  "keywords": ["material-ui", "next", "date", "time", "datepicker", "timepicker", "calendar", "clock"],
+  "keywords": [
+    "material-ui",
+    "next",
+    "date",
+    "time",
+    "datepicker",
+    "timepicker",
+    "calendar",
+    "clock"
+  ],
   "repository": {
     "type": "github",
     "url": "https://github.com/chingyawhao/material-ui-next-pickers"

@@ -56,14 +56,18 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     }
   }
   componentDidMount() {
-    window.addEventListener('click', (event) => {
-      if([this.input, this.calendar].reduce((contain, next) => contain && (!next || next.compareDocumentPosition(event.target as Node) < 16), true)) {
-        this.closeCalendar()
-      }
-    })
+    window.addEventListener('click', this.handleWindowClick)
   }
   componentDidUpdate(prevProps, prevState) {
     if((prevProps.value && prevProps.value.getTime()) !== (this.props.value && this.props.value.getTime()) && prevState.calendarShow) {
+      this.closeCalendar()
+    }
+  }
+  componentWillUnmount() {
+    window.removeEventListener('click', this.handleWindowClick)
+  }
+  handleWindowClick = (event) => {
+    if([this.input, this.calendar].reduce((contain, next) => contain && (!next || next.compareDocumentPosition(event.target as Node) < 16), true)) {
       this.closeCalendar()
     }
   }
