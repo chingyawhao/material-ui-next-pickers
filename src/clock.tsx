@@ -180,14 +180,14 @@ class Clock extends React.Component<ClockProps, ClockState> {
     const {value, onChange, okToConfirm} = this.props
     const {selected} = this.state
     const date = new Date((okToConfirm? selected:value) || defaultTime)
-    if(selecting && label === 'hour') {
+    if(selecting >= 0 && label === 'hour') {
       date.setHours(selecting + ((value && value.getHours() >= 12)? 12:0))
-    } else if(selecting && label === 'minute') {
+    } else if(selecting >= 0 && label === 'minute') {
       date.setMinutes(selecting)
     }
-    if(selecting && okToConfirm) {
+    if(selecting >= 0 && okToConfirm) {
       this.setState({selecting:true, selected:date})
-    } else if(selecting) {
+    } else if(selecting >= 0) {
       this.setState({selecting:true}, () => onChange(date, event))
     }
   }
