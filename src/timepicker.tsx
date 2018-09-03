@@ -56,11 +56,15 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
     }
   }
   componentDidMount() {
-    window.addEventListener('click', (event) => {
-      if([this.input, this.clock].reduce((contain, next) => contain && (!next || next.compareDocumentPosition(event.target as Node) < 16), true)) {
-        this.closeClock()
-      }
-    })
+    window.addEventListener('click', this.onWindowClick)
+  }
+  componentWillUnmount() {
+    window.removeEventListener('click', this.onWindowClick)
+  }
+  onWindowClick = (event:MouseEvent) => {
+    if([this.input, this.clock].reduce((contain, next) => contain && (!next || next.compareDocumentPosition(event.target as Node) < 16), true)) {
+      this.closeClock()
+    }
   }
   onFocus = (focus:boolean) => {
     this.setState({focus})
