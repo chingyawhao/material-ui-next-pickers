@@ -297,7 +297,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     return daysInWeekInMonth
   }
   render() {
-    const {classes, value, closeCalendar, okToConfirm} = this.props
+    const {classes, value, closeCalendar, dateDisabled, okToConfirm} = this.props
     const {mode, buttonHeight, selected, year, month, yearIndex} = this.state
     const active = okToConfirm? selected:value
     return (<div ref={container => this.container = container} className={classes.root}>
@@ -334,14 +334,14 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
                   {week.map((date, index) =>
                     date? <IconButton
                       classes={{root:classnames({[classes.selectedDay]:active && DateUtil.sameDay(date, active)}, (classes as any).weekDay)}}
-                      disabled={this.dayInvalid(date)}
+                      disabled={this.dayInvalid(date) || (dateDisabled && dateDisabled(date))}
                       onClick={event => this.selectDate(date, event)} key={'day-' + index}
                       style={{height:buttonHeight - 10}}
                     >
                       <Typography
                         classes={{root:classnames({
                           [classes.selectedDayText]: active && DateUtil.sameDay(date, active),
-                          [(classes as any).invalidInput]: this.dayInvalid(date)
+                          [(classes as any).invalidInput]: this.dayInvalid(date) || (dateDisabled && dateDisabled(date))
                         })}}
                         variant='body1'
                         style={{height:buttonHeight - 10, lineHeight:`${buttonHeight - 10}px`}}
@@ -416,6 +416,7 @@ export interface CalendarProps extends React.Props<{}>, StyledComponentProps {
   value: Date
   onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
   closeCalendar: () => void
+  dateDisabled?: (date:Date) => boolean
   min?: Date
   max?: Date
   okToConfirm?: boolean

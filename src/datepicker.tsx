@@ -92,8 +92,14 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     }
   }
   render() {
-    const {name, label, value, onChange, anchorOrigin, transformOrigin, disabled, error, fullWidth, min, max, dialog, okToConfirm, endIcon, className, InputLabelProps, InputProps, FormHelperTextProps, CalendarProps, classes} = this.props
+    const {name, label, value, onChange, anchorOrigin, transformOrigin, disabled, error, fullWidth, dateDisabled, min, max, dialog, okToConfirm, endIcon, className, InputLabelProps, InputProps, FormHelperTextProps, CalendarProps, classes} = this.props
     const {focus, calendarShow} = this.state
+    const calendarProps = {
+      ref: calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element,
+      value, onChange, dateDisabled, min, max,
+      closeCalendar: this.closeCalendar, okToConfirm,
+      ...CalendarProps
+    }
     return ([
       <div key='date-input' className={className} ref={input => this.input = input}>
         <FormControl className={classes.formControl} disabled={disabled} onClick={this.toggleShowCalendar} error={error !== undefined} fullWidth>
@@ -117,24 +123,13 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
       </div>,
       dialog?
       <Dialog key='date-dialog' open={calendarShow} onClose={this.closeCalendar}>
-        <Calendar
-          ref={calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element}
-          value={value} onChange={onChange} min={min} max={max}
-          closeCalendar={this.closeCalendar} okToConfirm={okToConfirm}
-          {...CalendarProps as any}
-        />
+        <Calendar {...calendarProps as any}/>
       </Dialog> :
       <Popover key='date-popover'
         onEntered={() => {if(this.action.resize) this.action.resize()}}
         open={calendarShow} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}
       >
-        <Calendar
-          action={action => this.action.resize = action.resize}
-          ref={calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element}
-          value={value} onChange={onChange} min={min} max={max}
-          closeCalendar={this.closeCalendar} okToConfirm={okToConfirm}
-          {...CalendarProps as any}
-        />
+        <Calendar action={action => this.action.resize = action.resize} {...calendarProps as any}/>
       </Popover>
     ])
   }
@@ -154,6 +149,7 @@ export interface DateFormatInputProps extends React.Props<{}>, StyledComponentPr
   }
   disabled?: boolean
   error?: string
+  dateDisabled?: (date:Date) => boolean
   min?: Date
   max?: Date
   dateFormat?: string | ((date:Date) => string)

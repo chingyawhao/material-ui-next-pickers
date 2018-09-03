@@ -28,6 +28,7 @@ transformOrigin?: {
 }
 disabled?: boolean
 error?: string
+dateDisabled?: (date:Date) => boolean
 min?: Date
 max?: Date
 dateFormat?: string | ((date:Date) => string)
@@ -47,6 +48,7 @@ action: (actions:any) => void // only resize event
 value: Date
 onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
 closeCalendar: () => void
+dateDisabled?: (date:Date) => boolean
 min?: Date
 max?: Date
 okToConfirm?: boolean
