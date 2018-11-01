@@ -26,7 +26,8 @@ const styles = (theme:Theme):StyleRules => ({
     cursor: 'pointer'
   },
   input: {
-    width: '180px',
+    minWidth: '180px',
+    flexGrow: 1,
     maxWidth: '100%',
     height: '19px',
     padding: '6px 0 7px',
