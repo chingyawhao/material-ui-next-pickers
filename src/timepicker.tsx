@@ -81,7 +81,7 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
     const {focus, clockShow} = this.state
     return ([
       <div key='date-input' className={className} ref={input => this.input = ReactDOM.findDOMNode(input)}>
-        <FormControl className={classes.formControl} disabled={disabled} onClick={this.toggleShowClock} error={error !== undefined} fullWidth>
+        <FormControl className={classes.formControl} disabled={disabled} onClick={this.toggleShowClock} error={error !== undefined} fullWidth={fullWidth}>
           {label && <InputLabel shrink={focus || clockShow || value !== undefined} htmlFor={name}
             {...{...InputLabelProps, classes:InputLabelProps && InputLabelProps.classes? {root:classes.label, ...InputLabelProps.classes}:{root:classes.label}}}>
             {label}
