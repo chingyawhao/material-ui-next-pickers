@@ -4,7 +4,7 @@ import * as classnames from 'classnames'
 import {withStyles, Theme, StyledComponentProps, StyleRules} from '@material-ui/core/styles'
 import Popover from '@material-ui/core/Popover'
 import Dialog from '@material-ui/core/Dialog'
-import FormControl from '@material-ui/core/FormControl'
+import FormControl, {FormControlProps} from '@material-ui/core/FormControl'
 import FormHelperText, {FormHelperTextProps} from '@material-ui/core/FormHelperText'
 import Input, {InputProps} from '@material-ui/core/Input'
 import InputLabel, {InputLabelProps} from '@material-ui/core/InputLabel'
@@ -93,7 +93,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     }
   }
   render() {
-    const {name, label, value, onChange, anchorOrigin, transformOrigin, disabled, error, fullWidth, dateDisabled, min, max, dialog, okToConfirm, endIcon, className, InputLabelProps, InputProps, FormHelperTextProps, CalendarProps, classes} = this.props
+    const {name, label, value, onChange, anchorOrigin, transformOrigin, disabled, error, fullWidth, dateDisabled, min, max, dialog, okToConfirm, endIcon, className, FormControlProps, InputLabelProps, InputProps, FormHelperTextProps, CalendarProps, classes} = this.props
     const {focus, calendarShow} = this.state
     const calendarProps = {
       ref: calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element,
@@ -103,7 +103,9 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     }
     return ([
       <div key='date-input' className={className} ref={input => this.input = input}>
-        <FormControl className={classes.formControl} disabled={disabled} onClick={this.toggleShowCalendar} error={error !== undefined} fullWidth={fullWidth}>
+        <FormControl disabled={disabled} onClick={this.toggleShowCalendar} error={error !== undefined} fullWidth={fullWidth}
+          {...{...FormControlProps, classes:FormControlProps && FormControlProps.classes? {root:classes.formControl, ...FormControlProps.classes}:{root:classes.formControl}}}
+        >
           {label && <InputLabel shrink={focus || calendarShow || value !== undefined} htmlFor={name}
             {...{...InputLabelProps, classes:InputLabelProps && InputLabelProps.classes? {root:classes.label, ...InputLabelProps.classes}:{root:classes.label}}}>
             {label}
@@ -159,6 +161,7 @@ export interface DateFormatInputProps extends React.Props<{}>, StyledComponentPr
   okToConfirm?: boolean
   endIcon?: Node
   className?: string
+  FormControlProps?: FormControlProps
   InputLabelProps?: InputLabelProps
   InputProps?: InputProps
   FormHelperTextProps?: FormHelperTextProps

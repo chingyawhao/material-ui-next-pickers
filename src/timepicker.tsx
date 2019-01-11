@@ -4,7 +4,7 @@ import * as classnames from 'classnames'
 import {withStyles, Theme, StyledComponentProps, StyleRules} from '@material-ui/core/styles'
 import Popover from '@material-ui/core/Popover'
 import Dialog from '@material-ui/core/Dialog'
-import FormControl from '@material-ui/core/FormControl'
+import FormControl, {FormControlProps} from '@material-ui/core/FormControl'
 import FormHelperText, {FormHelperTextProps} from '@material-ui/core/FormHelperText'
 import Input, {InputProps} from '@material-ui/core/Input'
 import InputLabel, {InputLabelProps} from '@material-ui/core/InputLabel'
@@ -78,11 +78,13 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
     this.setState({clockShow:false})
   }
   render() {
-    const {name, label, value, onChange, selectableMinutesInterval, anchorOrigin, transformOrigin, disabled, error, fullWidth, dialog, okToConfirm, endIcon, className, InputLabelProps, InputProps, FormHelperTextProps, ClockProps, classes} = this.props
+    const {name, label, value, onChange, selectableMinutesInterval, anchorOrigin, transformOrigin, disabled, error, fullWidth, dialog, okToConfirm, endIcon, className, FormControlProps, InputLabelProps, InputProps, FormHelperTextProps, ClockProps, classes} = this.props
     const {focus, clockShow} = this.state
     return ([
       <div key='date-input' className={className} ref={input => this.input = ReactDOM.findDOMNode(input)}>
-        <FormControl className={classes.formControl} disabled={disabled} onClick={this.toggleShowClock} error={error !== undefined} fullWidth={fullWidth}>
+        <FormControl disabled={disabled} onClick={this.toggleShowClock} error={error !== undefined} fullWidth={fullWidth}
+          {...{...FormControlProps, classes:FormControlProps && FormControlProps.classes? {root:classes.formControl, ...FormControlProps.classes}:{root:classes.formControl}}}
+        >
           {label && <InputLabel shrink={focus || clockShow || value !== undefined} htmlFor={name}
             {...{...InputLabelProps, classes:InputLabelProps && InputLabelProps.classes? {root:classes.label, ...InputLabelProps.classes}:{root:classes.label}}}>
             {label}
@@ -144,6 +146,7 @@ export interface TimeFormatInputProps extends React.Props<{}>, StyledComponentPr
   okToConfirm?: boolean
   endIcon?: Node
   className?: string
+  FormControlProps?: FormControlProps
   InputLabelProps?: InputLabelProps
   InputProps?: InputProps
   FormHelperTextProps?: FormHelperTextProps

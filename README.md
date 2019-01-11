@@ -37,6 +37,7 @@ dialog?: boolean
 okToConfirm?: boolean
 endIcon?: Node
 className?: string
+FormControlProps?: FormControlProps
 InputLabelProps?: InputLabelProps
 InputProps?: InputProps
 FormHelperTextProps?: FormHelperTextProps
@@ -82,6 +83,7 @@ dialog?: boolean
 okToConfirm?: boolean
 endIcon?: Node
 className?: string
+FormControlProps?: FormControlProps
 InputLabelProps?: InputLabelProps
 InputProps?: InputProps
 FormHelperTextProps?: FormHelperTextProps
