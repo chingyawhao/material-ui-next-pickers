@@ -17,6 +17,7 @@ npm install material-ui-next-pickers --save
 name: string
 label?: string
 value: Date
+variant?: 'standard' | 'outlined' | 'filled'
 onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
 anchorOrigin?: {
   vertical: 'top' | 'center' | 'bottom'
@@ -66,6 +67,7 @@ classes?: {
 name: string
 label?: string
 value: Date
+variant?: 'standard' | 'outlined' | 'filled'
 onChange: (value:Date, event?:React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void
 selectableMinutesInterval?: number
 anchorOrigin?: {

@@ -7,6 +7,8 @@ import Dialog from '@material-ui/core/Dialog'
 import FormControl, {FormControlProps} from '@material-ui/core/FormControl'
 import FormHelperText, {FormHelperTextProps} from '@material-ui/core/FormHelperText'
 import Input, {InputProps} from '@material-ui/core/Input'
+import OutlinedInput, {OutlinedInputProps} from '@material-ui/core/OutlinedInput'
+import FilledInput from '@material-ui/core/FilledInput'
 import InputLabel, {InputLabelProps} from '@material-ui/core/InputLabel'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton'
@@ -16,6 +18,9 @@ import * as DateUtil from './date'
 import Calendar, {CalendarProps} from './calendar'
 
 const styles = (theme:Theme):StyleRules => ({
+  container: {
+    width: '100%'
+  },
   label: {
     maxWidth: '100%',
     whiteSpace: 'nowrap',
@@ -34,6 +39,12 @@ const styles = (theme:Theme):StyleRules => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis'
+  },
+  outlinedInput: {
+    padding: '18.5px 14px'
+  },
+  filledInput: {
+    padding: '27px 12px 10px'
   }
 })
 @(withStyles as any)(styles)
@@ -53,6 +64,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     }
     this.state = {
       focus: false,
+      labelWidth: 0,
       calendarShow: false
     }
   }
@@ -67,13 +79,19 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
   componentWillUnmount() {
     window.removeEventListener('click', this.onWindowClick)
   }
+  labelRef = (label:React.ReactInstance) => {
+    const labelDOM = ReactDOM.findDOMNode(label) as HTMLLabelElement
+    if(labelDOM && labelDOM.offsetWidth) {
+      this.setState({labelWidth:labelDOM.offsetWidth})
+    }
+  }
   onWindowClick = (event:MouseEvent) => {
     if([this.input, this.calendar].reduce((contain, next) => contain && (!next || next.compareDocumentPosition(event.target as Node) < 16), true)) {
       this.closeCalendar()
     }
   }
-  onFocus = (focus:boolean) => {
-    this.setState({focus})
+  onFocus = (event:React.FocusEvent<HTMLInputElement>) => {
+    this.setState({focus:event.type === 'focus'})
   }
   toggleShowCalendar = () => {
     const {calendarShow} = this.state
@@ -93,27 +111,34 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     }
   }
   render() {
-    const {name, label, value, onChange, anchorOrigin, transformOrigin, disabled, error, fullWidth, dateDisabled, min, max, dialog, okToConfirm, endIcon, className, FormControlProps, InputLabelProps, InputProps, FormHelperTextProps, CalendarProps, classes} = this.props
-    const {focus, calendarShow} = this.state
+    const {name, label, value, variant, onChange, anchorOrigin, transformOrigin, disabled, error, fullWidth, dateDisabled, min, max, dialog, okToConfirm, endIcon, className, FormControlProps, InputLabelProps, InputProps, FormHelperTextProps, CalendarProps, classes} = this.props
+    const {focus, labelWidth, calendarShow} = this.state
     const calendarProps = {
       ref: calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element,
       value, onChange, dateDisabled, min, max,
       closeCalendar: this.closeCalendar, okToConfirm,
       ...CalendarProps
     }
+    const SelectedInput:React.ComponentType<InputProps | OutlinedInputProps> = variant === 'outlined'? OutlinedInput:
+      variant === 'filled'? FilledInput:Input
     return ([
-      <div key='date-input' className={className} ref={input => this.input = input}>
-        <FormControl disabled={disabled} onClick={this.toggleShowCalendar} error={error !== undefined} fullWidth={fullWidth}
+      <div key='date-input' className={classnames({[classes.container]:fullWidth}, className)} ref={input => this.input = input}>
+        <FormControl disabled={disabled} onClick={this.toggleShowCalendar} error={error !== undefined} fullWidth={fullWidth} variant={variant}
           {...{...FormControlProps, classes:FormControlProps && FormControlProps.classes? {root:classes.formControl, ...FormControlProps.classes}:{root:classes.formControl}}}
         >
-          {label && <InputLabel shrink={focus || calendarShow || value !== undefined} htmlFor={name}
+          {label && <InputLabel {...{ref:this.labelRef}} shrink={focus || calendarShow || value !== undefined} htmlFor={name}
             {...{...InputLabelProps, classes:InputLabelProps && InputLabelProps.classes? {root:classes.label, ...InputLabelProps.classes}:{root:classes.label}}}>
             {label}
           </InputLabel>}
-          <Input name={name} value={value? this.dateValue(value):'\u00a0'}
-            onFocus={() => this.onFocus(true)}
-            onBlur={() => this.onFocus(false)}
-            inputComponent={({value}) => <div className={classes.input}>{value}</div>}
+          <SelectedInput name={name} value={value? this.dateValue(value):'\u00a0'}
+            {...variant === 'outlined'? {
+              notched: focus || calendarShow || value !== undefined,
+              labelWidth
+            }:{}}
+            onFocus={this.onFocus} onBlur={this.onFocus}
+            inputComponent={({value}) =>
+              <div className={classnames(classes.input, {[classes.outlinedInput]:variant === 'outlined', [classes.filledInput]:variant === 'filled'})}>{value}</div>
+            }
             endAdornment={<InputAdornment position='end'>
               <IconButton onMouseDown={event => event.preventDefault()}>
                 {endIcon? endIcon:<Today/>}
@@ -141,6 +166,7 @@ export interface DateFormatInputProps extends React.Props<{}>, StyledComponentPr
   name: string
   label?: string
   value: Date
+  variant?: 'standard' | 'outlined' | 'filled'
   onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
   anchorOrigin?: {
     vertical: 'top' | 'center' | 'bottom'
@@ -169,6 +195,7 @@ export interface DateFormatInputProps extends React.Props<{}>, StyledComponentPr
 }
 export interface DateFormatInputState {
   focus: boolean
+  labelWidth: number
   calendarShow: boolean
 }
 

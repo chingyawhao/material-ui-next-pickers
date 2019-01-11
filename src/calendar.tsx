@@ -71,11 +71,18 @@ const styles = (theme:Theme):StyleRules => ({
   weekDayResponse: {
     maxHeight: 'calc(((100vw - 64px) / 7) - 10px)'
   },
+  day: {
+    padding: 0,
+    transition: theme.transitions.create('background-color')
+  },
   selectedDay: {
     backgroundColor: theme.palette.primary.dark,
     '&:hover': {
       backgroundColor: theme.palette.primary.main
     }
+  },
+  dayText: {
+    transition: theme.transitions.create('color')
   },
   selectedDayText: {
     color: theme.palette.primary.contrastText
@@ -333,13 +340,13 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
                 <div className={(classes as any).week} key={'week-' + index}>
                   {week.map((date, index) =>
                     date? <IconButton
-                      classes={{root:classnames({[classes.selectedDay]:active && DateUtil.sameDay(date, active)}, (classes as any).weekDay)}}
+                      classes={{root:classnames(classes.day, {[classes.selectedDay]:active && DateUtil.sameDay(date, active)}, (classes as any).weekDay)}}
                       disabled={this.dayInvalid(date) || (dateDisabled && dateDisabled(date))}
                       onClick={event => this.selectDate(date, event)} key={'day-' + index}
                       style={{height:buttonHeight - 10}}
                     >
                       <Typography
-                        classes={{root:classnames({
+                        classes={{root:classnames(classes.dayText, {
                           [classes.selectedDayText]: active && DateUtil.sameDay(date, active),
                           [(classes as any).invalidInput]: this.dayInvalid(date) || (dateDisabled && dateDisabled(date))
                         })}}
@@ -422,7 +429,9 @@ export interface CalendarProps extends React.Props<{}>, StyledComponentProps {
   okToConfirm?: boolean
   classes?: {
     root?: string
+    day?: string
     selectedDay?: string
+    dayText?: string
     selectedDayText?: string
     selectedYear?: string
     selectedYearText?: string
