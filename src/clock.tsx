@@ -162,7 +162,16 @@ class Clock extends React.Component<ClockProps, ClockState> {
     const radian = Math.atan2(target.y - origin.y, target.x - origin.x)
     const angle = radian + (Math.PI / 6 * 3) < 0? radian + (Math.PI / 6 * 15):radian + (Math.PI / 6 * 3)
     const select = Math.round(angle / 2 / Math.PI * options.length)
-    return options[select > options.length - 1? 0:select]
+    const selected = options
+      .map((option, index) => ({
+        option,
+        distance: Math.min(...[index, index + options.length].map(index => Math.abs(index - select)))
+      }))
+      .filter(select => select.option !== undefined)
+      .reduce((selected, option) =>
+        selected && selected.distance < option.distance? selected:option
+      , undefined)
+    return selected && selected.option
   }
   getOriginPoint = () => {
     const clockface = this.clockface.getBoundingClientRect()
