@@ -1,8 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import * as classnames from 'classnames'
+import classnames from 'classnames'
 import {withStyles, Theme, StyledComponentProps, StyleRules} from '@material-ui/core/styles'
-import Popover from '@material-ui/core/Popover'
+import Popover, {PopoverActions} from '@material-ui/core/Popover'
 import Dialog from '@material-ui/core/Dialog'
 import FormControl, {FormControlProps} from '@material-ui/core/FormControl'
 import FormHelperText, {FormHelperTextProps} from '@material-ui/core/FormHelperText'
@@ -65,7 +65,8 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     this.state = {
       focus: false,
       labelWidth: 0,
-      calendarShow: false
+      calendarShow: false,
+      updateCalendarPosition: undefined
     }
   }
   componentDidMount() {
@@ -85,6 +86,9 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
       this.setState({labelWidth:labelDOM.offsetWidth})
     }
   }
+  onPopoverAction = (actions:PopoverActions) => {
+    this.setState({updateCalendarPosition:actions.updatePosition})
+  }
   onWindowClick = (event:MouseEvent) => {
     if([this.input, this.calendar].reduce((contain, next) => contain && (!next || next.compareDocumentPosition(event.target as Node) < 16), true)) {
       this.closeCalendar()
@@ -94,8 +98,9 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     this.setState({focus:event.type === 'focus'})
   }
   toggleShowCalendar = () => {
+    const {disabled} = this.props
     const {calendarShow} = this.state
-    this.setState({calendarShow:!calendarShow})
+    this.setState({calendarShow:!disabled && !calendarShow})
   }
   closeCalendar = () => {
     this.setState({calendarShow:false})
@@ -112,7 +117,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
   }
   render() {
     const {name, label, value, variant, onChange, anchorOrigin, transformOrigin, disabled, error, fullWidth, dateDisabled, min, max, dialog, okToConfirm, endIcon, className, FormControlProps, InputLabelProps, InputProps, FormHelperTextProps, CalendarProps, classes} = this.props
-    const {focus, labelWidth, calendarShow} = this.state
+    const {focus, labelWidth, calendarShow, updateCalendarPosition} = this.state
     const calendarProps = {
       ref: calendar => this.calendar = ReactDOM.findDOMNode(calendar) as Element,
       value, onChange, dateDisabled, min, max,
@@ -140,7 +145,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
               <div className={classnames(classes.input, {[classes.outlinedInput]:variant === 'outlined', [classes.filledInput]:variant === 'filled'})}>{value}</div>
             }
             endAdornment={<InputAdornment position='end'>
-              <IconButton onMouseDown={event => event.preventDefault()}>
+              <IconButton disabled={disabled} onMouseDown={event => event.preventDefault()}>
                 {endIcon? endIcon:<Today/>}
               </IconButton>
             </InputAdornment>}
@@ -154,10 +159,11 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
         <Calendar {...calendarProps as any}/>
       </Dialog> :
       <Popover key='date-popover'
+        action={actions => this.onPopoverAction(actions)}
         onEntered={() => {if(this.action.resize) this.action.resize()}}
         open={calendarShow} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}
       >
-        <Calendar action={action => this.action.resize = action.resize} {...calendarProps as any}/>
+        <Calendar action={action => this.action.resize = action.resize} onUpdateSize={updateCalendarPosition} {...calendarProps as any}/>
       </Popover>
     ])
   }
@@ -197,6 +203,7 @@ export interface DateFormatInputState {
   focus: boolean
   labelWidth: number
   calendarShow: boolean
+  updateCalendarPosition: () => void
 }
 
 export default DateFormatInput

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import * as classnames from 'classnames'
+import classnames from 'classnames'
 import {withStyles, Theme, StyledComponentProps, StyleRules} from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
@@ -295,14 +295,14 @@ class Clock extends React.Component<ClockProps, ClockState> {
     return (<div className={classes.root}>
       <div className={classnames((classes as any).clockDigitalContainer, classes.digitalContainer)}>
         <div className={classnames((classes as any).clockDigitContainer, (classes as any).hourDigitContainer)}>
-          <Typography color={mode === 'hour'? 'primary':'default'} variant='display3'
+          <Typography color={mode === 'hour'? 'primary':'default'} variant='h2'
             classes={{root:classnames((classes as any).digitText, (classes as any).hourDigitText)}}
             onClick={() => this.clickSetMode('hour')}
           >{selected.hour === 0? 12:selected.hour}</Typography>
         </div>
-        <div><Typography variant='display3' classes={{root:(classes as any).colonDigit}}>:</Typography></div>
+        <div><Typography variant='h2' classes={{root:(classes as any).colonDigit}}>:</Typography></div>
         <div className={classnames((classes as any).clockDigitContainer, (classes as any).miniteDigitContainer)}>
-          <Typography color={mode === 'minute'? 'primary':'default'} variant='display3'
+          <Typography color={mode === 'minute'? 'primary':'default'} variant='h2'
             classes={{root:(classes as any).digitText}}
             onClick={() => this.clickSetMode('minute')}
           >{DateUtil.fillInDigit(selected.minute, 2)}</Typography>

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import * as classnames from 'classnames'
+import classnames from 'classnames'
 import {withStyles, Theme, StyledComponentProps, StyleRules} from '@material-ui/core/styles'
 import Popover from '@material-ui/core/Popover'
 import Dialog from '@material-ui/core/Dialog'
@@ -89,8 +89,9 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
     this.setState({focus:event.type === 'focus'})
   }
   toggleShowClock = () => {
+    const {disabled} = this.props
     const {clockShow} = this.state
-    this.setState({clockShow:!clockShow})
+    this.setState({clockShow:!disabled && !clockShow})
   }
   closeClock = () => {
     this.setState({clockShow:false})
@@ -119,7 +120,7 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
               <div className={classnames(classes.input, {[classes.outlinedInput]:variant === 'outlined', [classes.filledInput]:variant === 'filled'})}>{value}</div>
             }
             endAdornment={<InputAdornment position='end'>
-              <IconButton onMouseDown={event => event.preventDefault()}>
+              <IconButton disabled={disabled} onMouseDown={event => event.preventDefault()}>
                 {endIcon? endIcon:<AccessTime/>}
               </IconButton>
             </InputAdornment>}

@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as ReactDom from 'react-dom'
 import SwipeableViews from 'react-swipeable-views'
 import {virtualize} from 'react-swipeable-views-utils'
-import * as classnames from 'classnames'
+import classnames from 'classnames'
 import {withStyles, Theme, StyledComponentProps, StyleRules} from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
@@ -177,7 +177,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     })
   }
   selectCalendarYear = (year?:number) => {
-    const {min, max} = this.props
+    const {min, max, onUpdateSize} = this.props
     const {month} = this.state
     if(year) {
       this.setState({
@@ -186,11 +186,11 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
         month: min && month < min.getMonth() && year === min.getFullYear()? min.getMonth():(
           max && month > max.getMonth() && year === max.getFullYear()? max.getMonth():month
         )
-      })
+      }, onUpdateSize)
     } else {
       this.setState({
         mode: 'month'
-      })
+      }, onUpdateSize)
     }
   }
   previousYearsValid = () => {
@@ -232,11 +232,12 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     return min === undefined || (month > min.getMonth() || year > min.getFullYear())
   }
   previousMonth = () => {
+    const {onUpdateSize} = this.props
     const {month, year} = this.state
     this.setState({
       year: year - (month <= 0? 1:0),
       month: month <= 0? 11:month - 1
-    })
+    }, onUpdateSize)
   }
   nextMonthValid = () => {
     const {max} = this.props
@@ -244,17 +245,19 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
     return max === undefined || (month < max.getMonth() || year < max.getFullYear())
   }
   nextMonth = () => {
+    const {onUpdateSize} = this.props
     const {month, year} = this.state
     this.setState({
       year: year + (month >= 11? 1:0),
       month: month >= 11? 0:month + 1
-    })
+    }, onUpdateSize)
   }
   changeMonth = (index) => {
+    const {onUpdateSize} = this.props
     this.setState({
       year: Math.floor(index / 12),
       month: index % 12
-    })
+    }, onUpdateSize)
   }
   dayInvalid = (date:Date) => {
     const {value, min, max} = this.props
@@ -393,7 +396,7 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
                     {years.map((currentYear, index) =>
                       <Button
                         className={classnames({[classes.selectedYear]:year === currentYear})}
-                        variant={year === currentYear? 'raised':'flat'}
+                        variant={year === currentYear? 'contained':'text'}
                         disabled={this.yearInvalid(currentYear)}
                         onClick={() => this.selectCalendarYear(currentYear)} key={'year-' + index}
                       >
@@ -421,6 +424,7 @@ export interface CalendarProps extends React.Props<{}>, StyledComponentProps {
   action: (actions:any) => void
   value: Date
   onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
+  onUpdateSize?: () => void
   closeCalendar: () => void
   dateDisabled?: (date:Date) => boolean
   min?: Date
