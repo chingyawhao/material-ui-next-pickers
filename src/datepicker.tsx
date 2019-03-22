@@ -171,7 +171,7 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
 export interface DateFormatInputProps extends React.Props<{}>, StyledComponentProps {
   name: string
   label?: string
-  value: Date
+  value?: Date
   variant?: 'standard' | 'outlined' | 'filled'
   onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
   anchorOrigin?: {
