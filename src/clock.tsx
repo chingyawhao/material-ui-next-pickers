@@ -26,7 +26,7 @@ const styles = (theme:Theme):StyleRules => ({
     justifyContent: 'flex-start'
   },
   digitText: {
-    width: '62px',
+    width: '70px',
     cursor: 'pointer',
     '&:active': {
       opacity: 0.7
@@ -37,7 +37,7 @@ const styles = (theme:Theme):StyleRules => ({
   },
   colonDigit: {
     width: '18px',
-    textAlign: 'left'
+    textAlign: 'center'
   },
   ampmButtons: {
     display: 'flex',
@@ -295,14 +295,14 @@ class Clock extends React.Component<ClockProps, ClockState> {
     return (<div className={classes.root}>
       <div className={classnames((classes as any).clockDigitalContainer, classes.digitalContainer)}>
         <div className={classnames((classes as any).clockDigitContainer, (classes as any).hourDigitContainer)}>
-          <Typography color={mode === 'hour'? 'primary':'default'} variant='h2'
+          <Typography color={mode === 'hour'? 'primary':'textPrimary'} variant='h2'
             classes={{root:classnames((classes as any).digitText, (classes as any).hourDigitText)}}
             onClick={() => this.clickSetMode('hour')}
           >{selected.hour === 0? 12:selected.hour}</Typography>
         </div>
         <div><Typography variant='h2' classes={{root:(classes as any).colonDigit}}>:</Typography></div>
         <div className={classnames((classes as any).clockDigitContainer, (classes as any).miniteDigitContainer)}>
-          <Typography color={mode === 'minute'? 'primary':'default'} variant='h2'
+          <Typography color={mode === 'minute'? 'primary':'textPrimary'} variant='h2'
             classes={{root:(classes as any).digitText}}
             onClick={() => this.clickSetMode('minute')}
           >{DateUtil.fillInDigit(selected.minute, 2)}</Typography>
