@@ -87,7 +87,8 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
     }
   }
   onPopoverAction = (actions:PopoverActions) => {
-    this.setState({updateCalendarPosition:actions.updatePosition})
+    const {updateCalendarPosition} = this.state
+    if(actions && !updateCalendarPosition) this.setState({updateCalendarPosition:actions.updatePosition})
   }
   onWindowClick = (event:MouseEvent) => {
     if([this.input, this.calendar].reduce((contain, next) => contain && (!next || next.compareDocumentPosition(event.target as Node) < 16), true)) {
