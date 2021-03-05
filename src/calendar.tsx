@@ -343,15 +343,17 @@ class Calendar extends React.Component<CalendarProps, CalendarState> {
                 <div className={(classes as any).week} key={'week-' + index}>
                   {week.map((date, index) =>
                     date? <IconButton
-                      classes={{root:classnames((classes as any).day, {[classes.selectedDay]:active && DateUtil.sameDay(date, active)}, (classes as any).weekDay)}}
-                      disabled={this.dayInvalid(date) || (dateDisabled && dateDisabled(date))}
+                      classes={{root:classnames((classes as any).day, {
+                        [classes.selectedDay]: active && DateUtil.sameDay(date, active)
+                      }, (classes as any).weekDay)}}
+                      disabled={this.dayInvalid(date) || dateDisabled?.(date)}
                       onClick={event => this.selectDate(date, event)} key={'day-' + index}
                       style={{height:buttonHeight - 10}}
                     >
                       <Typography
                         classes={{root:classnames((classes as any).dayText, {
-                          [classes.selectedDayText]: active && DateUtil.sameDay(date, active),
-                          [(classes as any).invalidInput]: this.dayInvalid(date) || (dateDisabled && dateDisabled(date))
+                          [classes.selectedDayText]: active && DateUtil.sameDay(date, active) && !this.dayInvalid(date),
+                          [(classes as any).invalidInput]: this.dayInvalid(date) || dateDisabled?.(date)
                         })}}
                         variant='body1'
                         style={{height:buttonHeight - 10, lineHeight:`${buttonHeight - 10}px`}}

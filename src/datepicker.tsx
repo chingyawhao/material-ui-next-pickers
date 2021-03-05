@@ -161,7 +161,6 @@ class DateFormatInput extends React.Component<DateFormatInputProps, DateFormatIn
       </Dialog> :
       <Popover key='date-popover'
         action={actions => this.onPopoverAction(actions)}
-        onEntered={() => {if(this.action.resize) this.action.resize()}}
         open={calendarShow} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}
       >
         <Calendar action={action => this.action.resize = action.resize} onUpdateSize={updateCalendarPosition} {...calendarProps as any}/>

@@ -1,6 +1,6 @@
 {
   "name": "material-ui-next-pickers",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Datepicker and timepicker for material-ui next",
   "keywords": [
     "material-ui",
@@ -22,7 +22,7 @@
   "scripts": {
     "prepare": "npm run module",
     "module": "tsc --rootDir src --declaration true --outDir dist",
-    "start:dev": "NODE_ENV=development webpack-dev-server --content-base app --history-api-fallback",
+    "start:dev": "NODE_ENV=development webpack serve --content-base app --history-api-fallback",
     "compile": "NODE_ENV=production webpack --display-error-details",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -38,20 +38,20 @@
     "react-swipeable-views-utils": "0.13.9"
   },
   "peerDependencies": {
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "@material-ui/core": "^4.9.7",
-    "@material-ui/styles": "^4.9.6",
-    "@material-ui/icons": "^4.9.1"
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/styles": "^4.11.3",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "devDependencies": {
-    "@types/react": "^16.9.25",
-    "@types/react-dom": "^16.9.5",
-    "html-webpack-plugin": "^4.0.1",
-    "ts-loader": "^6.2.2",
-    "typescript": "^3.8.3",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
+    "html-webpack-plugin": "^5.2.0",
+    "ts-loader": "^8.0.17",
+    "typescript": "^4.2.3",
+    "webpack": "^5.24.3",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }

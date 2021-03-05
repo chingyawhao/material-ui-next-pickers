@@ -138,7 +138,6 @@ class TimeFormatInput extends React.Component<TimeFormatInputProps, TimeFormatIn
         />
       </Dialog> :
       <Popover key='date-popover' open={clockShow}
-        onEntered={() => {if(this.action.resize) this.action.resize()}}
         anchorOrigin={anchorOrigin} transformOrigin={transformOrigin} anchorEl={this.input as any}
       >
         <Clock
