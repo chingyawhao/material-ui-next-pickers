@@ -16,7 +16,7 @@ npm install material-ui-next-pickers --save
 ```
 name: string
 label?: string
-value: Date
+value?: Date
 variant?: 'standard' | 'outlined' | 'filled'
 onChange: (value:Date, event?:React.MouseEvent<HTMLElement>) => void
 anchorOrigin?: {
@@ -112,7 +112,7 @@ classes?: {
 ## Basic setup
 1. Make sure you installed [Material UI Next](https://material-ui-next.com/).
 2. Install this package via npm.
-3. Import this package and use like the following: 
+3. Import this package and use like the following:
 ```tsx
 import {DateFormatInput, TimeFormatInput} from 'material-ui-next-pickers'
 
@@ -120,11 +120,11 @@ class YourComponent extends React.Component<{}, YourComponentState> {
   onChangeDate = (date:Date) => {
     console.log('Date: ', date)
     this.setState({date})
-  } 
+  }
   onChangeTime = (time:Date) => {
     console.log('Time: ', time)
     this.setState({time})
-  } 
+  }
   render() {
     const {date, time} = this.state
     return (
@@ -133,7 +133,7 @@ class YourComponent extends React.Component<{}, YourComponentState> {
         <TimeFormatInput name='time-input' value={time} onChange={this.onChangeTime}/>
       </div>
     )
-  } 
+  }
 }
 interface YourComponentState {
   date: Date
